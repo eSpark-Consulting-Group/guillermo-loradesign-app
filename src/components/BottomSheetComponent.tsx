@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Modal, StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 
 interface BottomSheetProps {
   visible: boolean;
@@ -7,9 +14,13 @@ interface BottomSheetProps {
   onClose: () => void;
 }
 
-const BottomSheetComponent = ({ visible, details, onClose }: BottomSheetProps) => {
+const BottomSheetComponent = ({
+  visible,
+  details,
+  onClose,
+}: BottomSheetProps) => {
   const [localDetails, setLocalDetails] = useState<string[]>([]);
-  
+
   useEffect(() => {
     if (details && details.length > 0) {
       console.log("Setting local details:", JSON.stringify(details));
@@ -19,7 +30,7 @@ const BottomSheetComponent = ({ visible, details, onClose }: BottomSheetProps) =
 
   if (!visible) return null;
 
-  const renderItem = ({ item, index }: { item: string, index: number }) => (
+  const renderItem = ({ item, index }: { item: string; index: number }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.itemText}>• {item}</Text>
     </View>
@@ -34,12 +45,12 @@ const BottomSheetComponent = ({ visible, details, onClose }: BottomSheetProps) =
     >
       <View style={styles.modalOverlay}>
         <TouchableOpacity style={styles.dismissArea} onPress={onClose} />
-        
+
         <View style={styles.bottomSheet}>
           <View style={styles.handle} />
-          
+
           <Text style={styles.title}>Device Info</Text>
-          
+
           {localDetails.length > 0 ? (
             <FlatList
               data={localDetails}
@@ -61,7 +72,7 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    // backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   dismissArea: {
     flex: 1,
@@ -107,7 +118,7 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
     marginTop: 20,
-  }
+  },
 });
 
 export default BottomSheetComponent;
