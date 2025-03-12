@@ -1,14 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE,Region } from "react-native-maps";
-
-export interface DeviceInfo {
-  id: number;
-  latitude: number;
-  longitude: number;
-  title: string;
-  details: string[];
-}
+import { DeviceInfo } from "../types";
 
 export interface MapComponentProps {
   deviceInfo: DeviceInfo[];
