@@ -12,20 +12,14 @@ export default function App() {
 }
 
 const MainApp = () => {
-  const deviceTheme = useColorScheme();
-
   return (
-    <NavigationContainer
-      theme={deviceTheme === "dark" ? DarkTheme : DefaultTheme}
-    >
+    <NavigationContainer theme={DefaultTheme}>
       <StatusBar
         translucent={true}
         backgroundColor={"transparent"}
-        barStyle={deviceTheme === "dark" ? "light-content" : "dark-content"}
+        barStyle={"light-content"}
       />
-      <SafeAreaProvider
-        style={{ backgroundColor: deviceTheme === "dark" ? "black" : "white" }}
-      >
+      <SafeAreaProvider>
         <BaseStationSelection />
       </SafeAreaProvider>
     </NavigationContainer>

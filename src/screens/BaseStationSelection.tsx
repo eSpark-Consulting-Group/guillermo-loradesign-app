@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
-import { ThemedText } from "../components/ThemedText";
+import { MyText } from "../components/MyText";
 
 const BaseStationSelection = () => {
   return (
     <View style={styles.container}>
-      <ThemedText style={styles.screenName}>Base Station Selection</ThemedText>
+      <MyText style={styles.screenName}>Base Station Selection</MyText>
     </View>
   );
 };
