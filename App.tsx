@@ -1,11 +1,7 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar, useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import BaseStationSelection from "./src/screens/BaseStationSelection";
+import RootTabs from "./src/navigation";
 
 export default function App() {
   return <MainApp />;
@@ -16,11 +12,11 @@ const MainApp = () => {
     <NavigationContainer theme={DefaultTheme}>
       <StatusBar
         translucent={true}
-        backgroundColor={"transparent"}
-        barStyle={"light-content"}
+        backgroundColor={"white"}
+        barStyle={"dark-content"}
       />
       <SafeAreaProvider>
-        <BaseStationSelection />
+        <RootTabs />
       </SafeAreaProvider>
     </NavigationContainer>
   );
