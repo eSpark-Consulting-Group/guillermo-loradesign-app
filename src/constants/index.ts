@@ -7,3 +7,30 @@ export const deviceList = [
   { id: 6, name: "Base Station 6" },
   { id: 7, name: "Base Station 7" },
 ];
+
+export const settingsOptions = [
+  {
+    id: 1,
+    text: "Master Data Export",
+    icon: "download",
+    onPress: () => {
+      console.log("Master Data Export");
+    },
+  },
+  {
+    id: 2,
+    text: "Bluetooth Status",
+    icon: "info-circle",
+    onPress: () => {
+      console.log("Bluetooth Status");
+    },
+  },
+  {
+    id: 3,
+    text: "Current Date For Map Display",
+    icon: "chevron-down",
+    onPress: () => {
+      console.log("Current Date For Map Display");
+    },
+  },
+];
