@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { StatusBar } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
