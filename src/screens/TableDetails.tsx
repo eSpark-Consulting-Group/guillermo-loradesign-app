@@ -1,4 +1,14 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { View, Text, StyleSheet } from "react-native";
+import {
+  BottomTabParamList,
+  RootStackParamList,
+} from "../types/navigationParams";
+
+type TableDetailsProps = StackScreenProps<
+  RootStackParamList & BottomTabParamList,
+  "Table"
+>;
 
 const TableDetails = () => {
   return (
