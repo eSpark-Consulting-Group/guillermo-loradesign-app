@@ -1,40 +1,51 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
 import BaseStationSelection from "../screens/BaseStationSelection";
 import MapView from "../screens/MapView";
 import Settings from "../screens/Settings";
 import TableDetails from "../screens/TableDetails";
+import {
+  BottomTabParamList,
+  RootStackParamList,
+} from "../types/navigationParams";
 
-type RootTabParamList = {
-  BaseStationSelection: undefined;
-  MapView: undefined;
-  Settings: undefined;
-  TableDetails: undefined;
-};
+import { Device } from "../types";
 
-const Tab = createBottomTabNavigator<RootTabParamList>();
+const Tab = createBottomTabNavigator<BottomTabParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
-const RootTabs = () => {
+const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
+  const { device } = route.params;
+
   return (
     <Tab.Navigator>
+      <Tab.Screen name="Map" component={MapView} initialParams={{ device }} />
       <Tab.Screen
-        name="BaseStationSelection"
-        component={BaseStationSelection}
+        name="Settings"
+        component={Settings}
+        initialParams={{ device }}
       />
-      <Tab.Screen name="MapView" component={MapView} />
-      <Tab.Screen name="Settings" component={Settings} />
-      <Tab.Screen name="TableDetails" component={TableDetails} />
+      <Tab.Screen
+        name="Table"
+        component={TableDetails}
+        initialParams={{ device }}
+      />
     </Tab.Navigator>
   );
 };
 
-const App = () => {
+const RootStack = () => {
   return (
-    <NavigationContainer>
-      <RootTabs />
-    </NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="BaseStationSelection"
+        component={BaseStationSelection}
+      />
+      <Stack.Screen name="BottomTabs" component={BottomTabs} />
+    </Stack.Navigator>
   );
 };
 
-export default RootTabs;
+export default RootStack;
