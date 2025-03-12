@@ -1,6 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Ionicons } from "@expo/vector-icons";
 
 import BaseStationSelection from "../screens/BaseStationSelection";
 import MapView from "../screens/MapView";
@@ -20,17 +21,47 @@ const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
   const { device } = route.params;
 
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Map" component={MapView} initialParams={{ device }} />
+    <Tab.Navigator
+      screenOptions={{
+        headerStyle: { height: 90 },
+      }}
+    >
       <Tab.Screen
-        name="Settings"
-        component={Settings}
+        name="Map"
+        component={MapView}
         initialParams={{ device }}
+        options={{
+          tabBarIcon(props) {
+            return (
+              <Ionicons name="map" size={props.size} color={props.color} />
+            );
+          },
+          tabBarStyle: { paddingVertical: 10 },
+        }}
       />
       <Tab.Screen
         name="Table"
         component={TableDetails}
         initialParams={{ device }}
+        options={{
+          tabBarIcon(props) {
+            return (
+              <Ionicons name="journal" size={props.size} color={props.color} />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        initialParams={{ device }}
+        options={{
+          tabBarIcon(props) {
+            return (
+              <Ionicons name="settings" size={props.size} color={props.color} />
+            );
+          },
+        }}
       />
     </Tab.Navigator>
   );
