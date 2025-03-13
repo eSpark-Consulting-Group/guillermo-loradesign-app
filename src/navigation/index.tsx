@@ -11,8 +11,9 @@ import {
   BottomTabParamList,
   RootStackParamList,
 } from "../types/navigationParams";
-
 import { Device } from "../types";
+import BottomTabBar from "../components/BottomTabBar";
+import { primaryColor } from "../constants/Colors";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -22,8 +23,10 @@ const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
 
   return (
     <Tab.Navigator
+      tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{
-        headerStyle: { height: 90 },
+        headerStyle: { height: 90, backgroundColor: "#ffffff" },
+        headerTitleStyle: { color: primaryColor },
       }}
     >
       <Tab.Screen
@@ -31,11 +34,9 @@ const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
         component={MapView}
         initialParams={{ device }}
         options={{
-          tabBarIcon(props) {
-            return (
-              <Ionicons name="map" size={props.size} color={props.color} />
-            );
-          },
+          tabBarIcon: (props) => (
+            <Ionicons name="map" size={props.size} color={props.color} />
+          ),
           tabBarStyle: { paddingVertical: 10 },
         }}
       />
@@ -44,11 +45,9 @@ const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
         component={TableDetails}
         initialParams={{ device }}
         options={{
-          tabBarIcon(props) {
-            return (
-              <Ionicons name="journal" size={props.size} color={props.color} />
-            );
-          },
+          tabBarIcon: (props) => (
+            <Ionicons name="journal" size={props.size} color={props.color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -56,11 +55,9 @@ const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
         component={Settings}
         initialParams={{ device }}
         options={{
-          tabBarIcon(props) {
-            return (
-              <Ionicons name="settings" size={props.size} color={props.color} />
-            );
-          },
+          tabBarIcon: (props) => (
+            <Ionicons name="settings" size={props.size} color={props.color} />
+          ),
         }}
       />
     </Tab.Navigator>
@@ -73,6 +70,12 @@ const RootStack = () => {
       <Stack.Screen
         name="BaseStationSelection"
         component={BaseStationSelection}
+        options={{
+          headerShown: true,
+          title: "Select Base Station",
+          headerTitleStyle: { color: primaryColor },
+          headerStyle: { height: 90, backgroundColor: "#ffffff" },
+        }}
       />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
     </Stack.Navigator>
