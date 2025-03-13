@@ -73,6 +73,9 @@ const RootStack = () => {
       <Stack.Screen
         name="BaseStationSelection"
         component={BaseStationSelection}
+        options={{ headerShown: true,
+          title: "Select Base Station"
+         }}
       />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
     </Stack.Navigator>
