@@ -1,8 +1,9 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import { MyText } from "./MyText";
 import { Device } from "../types";
 import { RadioButton } from "react-native-paper";
+import { primaryColor } from "../constants/Colors";
 
 interface DevicesListProps {
   devices: Device[];
@@ -15,6 +16,30 @@ const DevicesList: React.FC<DevicesListProps> = ({
   selectedDevice,
   onDeviceSelect,
 }) => {
+  const renderItem = ({ item: device }: { item: Device }) => (
+    <TouchableOpacity
+      key={device.id}
+      onPress={() => onDeviceSelect && onDeviceSelect(device)}
+      style={[
+        styles.deviceItem,
+        selectedDevice?.id === device.id && styles.selectedDevice,
+      ]}
+    >
+      <View style={styles.textContainer}>
+        <MyText style={styles.deviceName}>{device.name}</MyText>
+        <MyText style={styles.deviceDescription}>
+          Base station for connectivity and monitoring.
+        </MyText>
+      </View>
+      <RadioButton
+        value={device.id.toString()}
+        status={selectedDevice?.id === device.id ? "checked" : "unchecked"}
+        onPress={() => onDeviceSelect && onDeviceSelect(device)}
+        color="#136FA9"
+      />
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       {devices.map((device) => (
@@ -60,7 +85,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
   },
   selectedDevice: {
-    borderColor: "#2575fc",
+    borderColor: primaryColor,
     backgroundColor: "#eef4ff",
   },
   textContainer: {
