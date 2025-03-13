@@ -33,7 +33,7 @@ const DevicesList: React.FC<DevicesListProps> = ({
             </MyText>
           </View>
           <RadioButton
-            value={device.id}
+            value={device.id.toString()}
             status={selectedDevice?.id === device.id ? "checked" : "unchecked"}
             onPress={() => onDeviceSelect && onDeviceSelect(device)}
             color="#2575fc"
