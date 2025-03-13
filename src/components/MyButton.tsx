@@ -1,10 +1,10 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
+import { TouchableOpacity, Text,StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 interface MyButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>; 
 }
 
 const MyButton: React.FC<MyButtonProps> = ({ children, onClick, style }) => {
