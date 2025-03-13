@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import DevicesList from "../components/DevicesList";
 import { MyText } from "../components/MyText";
-import MyButton from "../components/MyButton";
 import {
   BottomTabParamList,
   RootStackParamList,
@@ -29,51 +29,104 @@ const BaseStationSelection = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          width: "100%",
-          height: "92%",
-          justifyContent: "space-between",
-          paddingHorizontal: 20,
-        }}
-      >
-        <View>
-          <MyText style={styles.screenName}>Select BaseStation</MyText>
+    <LinearGradient
+    colors={["#ffffff", "#ffffff", "#ffffff"]} 
+    style={styles.background}
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
           <DevicesList
             devices={deviceList}
             selectedDevice={deviceSelected}
             onDeviceSelect={handleDeviceSelect}
           />
         </View>
-        <MyButton
-          onClick={() => {
+
+        <TouchableOpacity
+          disabled={!deviceSelected}
+          onPress={() => {
             if (deviceSelected) {
               navigation.navigate("BottomTabs", {
                 device: deviceSelected,
               });
             }
           }}
-          style={{ width: "100%" }}
+          style={[
+            styles.buttonWrapper,
+            !deviceSelected ? styles.buttonDisabled : {},
+          ]}
         >
-          Select
-        </MyButton>
-      </View>
-    </SafeAreaView>
+          <LinearGradient
+            colors={["#3EADCF", "#2B879E"]}
+            style={styles.selectButton}
+          >
+            <MyText style={styles.buttonText}>Select</MyText>
+          </LinearGradient>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+  content: {
+    marginTop: 10,
   },
   screenName: {
     fontSize: 24,
     fontWeight: "bold",
-    paddingBottom: 15,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#000",
+  },
+  header: {
+    marginTop: 40,
+    alignItems: "center",
+  },
+  screenTitle: {
+    fontSize: 26,
+    fontWeight: "700",
+    textAlign: "center",
+    color: "#fff",
+  },
+  subTitle: {
+    fontSize: 16,
+    fontWeight: "400",
+    textAlign: "center",
+    color: "#B0BEC5",
+    marginTop: 5,
+  },
+  buttonWrapper: {
+    borderRadius: 12,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  selectButton: {
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#fff",
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
 });
 

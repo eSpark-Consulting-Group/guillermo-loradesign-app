@@ -1,8 +1,8 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { MyText } from "./MyText";
-
 import { Device } from "../types";
+import { RadioButton } from "react-native-paper";
 
 interface DevicesListProps {
   devices: Device[];
@@ -16,17 +16,28 @@ const DevicesList: React.FC<DevicesListProps> = ({
   onDeviceSelect,
 }) => {
   return (
-    <View style={{ borderWidth: 1, borderColor: "black", height: "90%" }}>
+    <View style={styles.container}>
       {devices.map((device) => (
         <TouchableOpacity
           key={device.id}
           onPress={() => onDeviceSelect && onDeviceSelect(device)}
           style={[
             styles.deviceItem,
-            selectedDevice?.id === device.id ? styles.selectedDevice : null,
+            selectedDevice?.id === device.id && styles.selectedDevice,
           ]}
         >
-          <MyText style={{ fontSize: 16 }}>{device.name}</MyText>
+          <View style={styles.textContainer}>
+            <MyText style={styles.deviceName}>{device.name}</MyText>
+            <MyText style={styles.deviceDescription}>
+              Base station for connectivity and monitoring.
+            </MyText>
+          </View>
+          <RadioButton
+            value={device.id}
+            status={selectedDevice?.id === device.id ? "checked" : "unchecked"}
+            onPress={() => onDeviceSelect && onDeviceSelect(device)}
+            color="#2575fc"
+          />
         </TouchableOpacity>
       ))}
     </View>
@@ -34,19 +45,36 @@ const DevicesList: React.FC<DevicesListProps> = ({
 };
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
+  container: {
+    width: "100%",
   },
   deviceItem: {
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
   selectedDevice: {
-    backgroundColor: "#e0e0e0",
+    borderColor: "#2575fc",
+    backgroundColor: "#eef4ff",
+  },
+  textContainer: {
+    flex: 1,
+    marginRight: 10,
+  },
+  deviceName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  deviceDescription: {
+    fontSize: 14,
+    color: "#666",
   },
 });
 
