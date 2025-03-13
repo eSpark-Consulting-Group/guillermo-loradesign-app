@@ -11,6 +11,7 @@ import {
 import { MyText } from "../components/MyText";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { settingsOptions } from "../constants";
+import { primaryColor } from "../constants/Colors";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -50,11 +51,11 @@ const Settings = () => {
                 <MyText style={styles.optionText}>{option.text}</MyText>
               </View>
               <View style={styles.rightSection}>
-              {option.id === 1 && (
+                {option.id === 1 && (
                   <Feather
-                    name={option.icon}
+                    name={option.icon as any}
                     size={22}
-                    color="#007AFF"
+                    color={primaryColor}
                     style={styles.icon}
                   />
                 )}
@@ -71,11 +72,11 @@ const Settings = () => {
                 )}
                 {option.id === 3 && (
                   <Feather
-                  name={isRegionExpanded ? "chevron-up" : "chevron-down"}
-                  size={22}
-                  color="#007AFF"
-                  style={styles.icon}
-                />
+                    name={isRegionExpanded ? "chevron-up" : "chevron-down"}
+                    size={22}
+                    color={primaryColor}
+                    style={styles.icon}
+                  />
                 )}
               </View>
             </TouchableOpacity>
@@ -97,7 +98,9 @@ const Settings = () => {
                           : "radiobox-blank"
                       }
                       size={20}
-                      color={selectedRegion === region ? "#007AFF" : "#A0A0A0"}
+                      color={
+                        selectedRegion === region ? primaryColor : "#A0A0A0"
+                      }
                     />
                   </TouchableOpacity>
                 ))}
