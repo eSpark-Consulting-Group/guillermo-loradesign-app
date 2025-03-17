@@ -8,7 +8,7 @@ import { primaryColor } from "../constants/Colors";
 interface DevicesListProps {
   devices: Device[];
   selectedDevice?: Device;
-  onDeviceSelect?: (device: Device) => void;
+  onDeviceSelect: (device: Device) => void;
 }
 
 const DevicesList: React.FC<DevicesListProps> = ({
