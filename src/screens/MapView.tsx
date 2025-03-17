@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import MapComponent from "../components/MapComponent";
 import { DeviceInfo } from "../types";
 import BottomSheetComponent from "../components/BottomSheetComponent";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import {
   BottomTabParamList,
@@ -19,6 +19,8 @@ const MapView = () => {
   const [selectedDetails, setSelectedDetails] = useState<string[]>();
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
+  const navigation = useNavigation<MapViewProps["navigation"]>();
+
   const { device } = route.params;
 
   const handleMarkerPress = (device: DeviceInfo) => {

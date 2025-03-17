@@ -7,6 +7,7 @@ export const deviceList = [
         id: 1,
         latitude: 24.8934,
         longitude: 67.0281,
+        altitude: 30, // Example altitude in meters
         title: "University of Karachi",
         details: [
           "One of the largest universities in Pakistan",
@@ -18,6 +19,7 @@ export const deviceList = [
         id: 2,
         latitude: 24.9208,
         longitude: 67.0971,
+        altitude: 20,
         title: "Jinnah International Airport",
         details: [
           "Busiest airport in Pakistan",
@@ -29,6 +31,7 @@ export const deviceList = [
         id: 3,
         latitude: 24.8975,
         longitude: 67.0745,
+        altitude: 25,
         title: "Mazar-e-Quaid",
         details: [
           "Mausoleum of Quaid-e-Azam Muhammad Ali Jinnah",
@@ -46,6 +49,7 @@ export const deviceList = [
         id: 1,
         latitude: 24.8607,
         longitude: 67.0011,
+        altitude: 10,
         title: "Karachi Port",
         details: [
           "One of the busiest ports in South Asia",
@@ -57,6 +61,7 @@ export const deviceList = [
         id: 2,
         latitude: 24.9276,
         longitude: 67.0325,
+        altitude: 15,
         title: "Safari Park",
         details: [
           "Popular recreational park in Karachi",
@@ -68,6 +73,7 @@ export const deviceList = [
         id: 3,
         latitude: 24.8915,
         longitude: 67.0652,
+        altitude: 18,
         title: "National Stadium",
         details: [
           "Largest cricket stadium in Pakistan",
@@ -85,6 +91,7 @@ export const deviceList = [
         id: 1,
         latitude: 24.86,
         longitude: 67.01,
+        altitude: 12,
         title: "Empress Market",
         details: [
           "Historic market in Karachi built during British rule",
@@ -96,6 +103,7 @@ export const deviceList = [
         id: 2,
         latitude: 24.927,
         longitude: 67.1111,
+        altitude: 22,
         title: "Mohatta Palace",
         details: [
           "A historic palace built in 1927",
@@ -107,6 +115,7 @@ export const deviceList = [
         id: 3,
         latitude: 24.835,
         longitude: 67.073,
+        altitude: 14,
         title: "Quaid-e-Azam House Museum",
         details: [
           "Former residence of Quaid-e-Azam Muhammad Ali Jinnah",
@@ -124,6 +133,7 @@ export const deviceList = [
         id: 1,
         latitude: 24.813,
         longitude: 67.0331,
+        altitude: 16,
         title: "Dolmen Mall Clifton",
         details: [
           "One of the largest shopping malls in Karachi",
@@ -135,6 +145,7 @@ export const deviceList = [
         id: 2,
         latitude: 24.8505,
         longitude: 67.0221,
+        altitude: 14,
         title: "Clifton Beach",
         details: [
           "One of the most famous beaches in Karachi",
@@ -146,6 +157,7 @@ export const deviceList = [
         id: 3,
         latitude: 24.8512,
         longitude: 67.0143,
+        altitude: 17,
         title: "Bahria Icon Tower",
         details: [
           "Tallest skyscraper in Pakistan",
@@ -163,6 +175,7 @@ export const deviceList = [
         id: 1,
         latitude: 24.8607,
         longitude: 67.0011,
+        altitude: 10,
         title: "Karachi Port",
         details: [
           "One of the busiest ports in South Asia",
@@ -174,6 +187,7 @@ export const deviceList = [
         id: 2,
         latitude: 24.9276,
         longitude: 67.0325,
+        altitude: 15,
         title: "Safari Park",
         details: [
           "Popular recreational park in Karachi",
@@ -185,6 +199,7 @@ export const deviceList = [
         id: 3,
         latitude: 24.8915,
         longitude: 67.0652,
+        altitude: 18,
         title: "National Stadium",
         details: [
           "Largest cricket stadium in Pakistan",
@@ -202,6 +217,7 @@ export const deviceList = [
         id: 1,
         latitude: 24.8532,
         longitude: 67.0167,
+        altitude: 14,
         title: "Merewether Tower",
         details: [
           "A historical landmark in Karachi",
@@ -213,6 +229,7 @@ export const deviceList = [
         id: 2,
         latitude: 24.9361,
         longitude: 67.0196,
+        altitude: 19,
         title: "PAF Museum",
         details: [
           "Museum dedicated to the Pakistan Air Force",
@@ -224,6 +241,7 @@ export const deviceList = [
         id: 3,
         latitude: 24.8608,
         longitude: 67.0647,
+        altitude: 21,
         title: "Frere Hall",
         details: [
           "Historic building from the British colonial era",
