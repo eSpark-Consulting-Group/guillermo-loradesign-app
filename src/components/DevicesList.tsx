@@ -41,31 +41,13 @@ const DevicesList: React.FC<DevicesListProps> = ({
   );
 
   return (
-    <View style={styles.container}>
-      {devices.map((device) => (
-        <TouchableOpacity
-          key={device.id}
-          onPress={() => onDeviceSelect && onDeviceSelect(device)}
-          style={[
-            styles.deviceItem,
-            selectedDevice?.id === device.id && styles.selectedDevice,
-          ]}
-        >
-          <View style={styles.textContainer}>
-            <MyText style={styles.deviceName}>{device.name}</MyText>
-            <MyText style={styles.deviceDescription}>
-              Base station for connectivity and monitoring.
-            </MyText>
-          </View>
-          <RadioButton
-            value={device.id.toString()}
-            status={selectedDevice?.id === device.id ? "checked" : "unchecked"}
-            onPress={() => onDeviceSelect && onDeviceSelect(device)}
-            color="#2575fc"
-          />
-        </TouchableOpacity>
-      ))}
-    </View>
+    <FlatList
+      data={devices}
+      renderItem={renderItem}
+      keyExtractor={(device) => device.id.toString()}
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    />
   );
 };
 
