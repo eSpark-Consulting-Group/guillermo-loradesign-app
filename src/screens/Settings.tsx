@@ -10,9 +10,10 @@ import {
 } from "react-native";
 import { MyText } from "../components/MyText";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { settingsOptions } from "../constants";
+import * as Permissions from 'expo-permissions';
 import { primaryColor } from "../constants/Colors";
 import DatabaseService from "../database/services/DatabaseService";
+import { settingsOptions } from "../constants";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -38,14 +39,15 @@ const Settings = () => {
     setIsRegionExpanded((prev) => !prev);
   }, []);
 
-  // const handleDownload = async () => {
-  //   try {
-  //     const path = await DatabaseService.downloadDeviceInfoCSVFile();
-  //     console.log("CSV saved to:", path);
-  //   } catch (error) {
-  //     console.error("Error downloading CSV:", error);
-  //   }
-  // };
+
+  const handleDownload = async () => {
+    try {
+      const path = await DatabaseService.downloadDeviceInfoCSVFile();
+      console.log("CSV saved to:", path);
+    } catch (error) {
+      console.error("Error downloading CSV:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,7 +57,7 @@ const Settings = () => {
             <TouchableOpacity
               style={styles.option}
               activeOpacity={0.7}
-              onPress={option.id === 3 ? toggleRegionDropdown : option.onPress}
+              onPress={option.id === 1 ? handleDownload : option.id === 3 ? toggleRegionDropdown : option.onPress}
             >
               <View style={styles.optionContent}>
                 <MyText style={styles.optionText}>{option.text}</MyText>
@@ -108,9 +110,7 @@ const Settings = () => {
                           : "radiobox-blank"
                       }
                       size={20}
-                      color={
-                        selectedRegion === region ? primaryColor : "#A0A0A0"
-                      }
+                      color={selectedRegion === region ? primaryColor : "#A0A0A0"}
                     />
                   </TouchableOpacity>
                 ))}

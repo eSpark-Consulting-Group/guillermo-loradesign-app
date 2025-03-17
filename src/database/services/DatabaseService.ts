@@ -1,13 +1,12 @@
 import { Device, DeviceInfo } from "@/src/types";
 import { getDatabase } from "..";
+import { downloadDeviceInfoCSV } from "../csvUtil";
 
 class DatabaseService {
     async saveDevice(device: Device) {
         try {
           const database = await getDatabase();
-    
-          let deviceId = device.id; // Use provided device.id directly
-    
+          let deviceId = device.id;
           const existingDevice = await database.getFirstAsync<Device>(
             'SELECT * FROM devices WHERE id = ?',
             [deviceId]
@@ -115,17 +114,17 @@ class DatabaseService {
     return this.getAllDevices();
   }
 
-//   async downloadDeviceInfoCSVFile() {
-//     try {
-//       const database = await getDatabase();
-//       const path = await downloadDeviceInfoCSV(database);
-//       console.log("CSV file saved to:", path);
-//       return path;
-//     } catch (error) {
-//       console.error("Failed to download CSV:", error);
-//       throw error;
-//     }
-//   }
+  async downloadDeviceInfoCSVFile() {
+    try {
+      const database = await getDatabase();
+      const path = await downloadDeviceInfoCSV(database);
+      console.log("CSV file saved to:", path);
+      return path;
+    } catch (error) {
+      console.error("Failed to download CSV:", error);
+      throw error;
+    }
+  }
 }
 
 export default new DatabaseService();
