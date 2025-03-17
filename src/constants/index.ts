@@ -43,7 +43,7 @@ export const deviceList = [
     name: "Base Station 2",
     deviceInfo: [
       {
-        id: 1,
+        id: 4,
         latitude: 24.8934,
         longitude: 67.0281,
         title: "University of Karachi",
@@ -54,7 +54,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
+        id: 5,
         latitude: 24.9208,
         longitude: 67.0971,
         title: "Jinnah International Airport",
@@ -65,7 +65,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
+        id: 6,
         latitude: 24.8975,
         longitude: 67.0745,
         title: "Mazar-e-Quaid",
@@ -82,7 +82,7 @@ export const deviceList = [
     name: "Base Station 3",
     deviceInfo: [
       {
-        id: 1,
+        id: 7,
         latitude: 24.8934,
         longitude: 67.0281,
         title: "University of Karachi",
@@ -93,7 +93,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
+        id: 8,
         latitude: 24.9208,
         longitude: 67.0971,
         title: "Jinnah International Airport",
@@ -104,7 +104,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
+        id: 9,
         latitude: 24.8975,
         longitude: 67.0745,
         title: "Mazar-e-Quaid",
@@ -121,7 +121,7 @@ export const deviceList = [
     name: "Base Station 4",
     deviceInfo: [
       {
-        id: 1,
+        id: 10,
         latitude: 24.8934,
         longitude: 67.0281,
         title: "University of Karachi",
@@ -132,7 +132,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
+        id: 11,
         latitude: 24.9208,
         longitude: 67.0971,
         title: "Jinnah International Airport",
@@ -143,7 +143,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
+        id: 12,
         latitude: 24.8975,
         longitude: 67.0745,
         title: "Mazar-e-Quaid",

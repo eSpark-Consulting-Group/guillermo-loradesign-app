@@ -12,6 +12,7 @@ import { MyText } from "../components/MyText";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { settingsOptions } from "../constants";
 import { primaryColor } from "../constants/Colors";
+import DatabaseService from "../database/services/DatabaseService";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -36,6 +37,15 @@ const Settings = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setIsRegionExpanded((prev) => !prev);
   }, []);
+
+  // const handleDownload = async () => {
+  //   try {
+  //     const path = await DatabaseService.downloadDeviceInfoCSVFile();
+  //     console.log("CSV saved to:", path);
+  //   } catch (error) {
+  //     console.error("Error downloading CSV:", error);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
