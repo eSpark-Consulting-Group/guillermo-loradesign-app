@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  LayoutAnimation,
   UIManager,
   Platform,
 } from "react-native";
@@ -22,21 +21,6 @@ if (
 }
 
 const Settings = () => {
-  const [selectedRegion, setSelectedRegion] = useState<string>("Region 1");
-  const [isRegionExpanded, setIsRegionExpanded] = useState(false);
-
-  const regionOptions = useMemo(() => ["Region 1", "Region 2", "Region 3"], []);
-
-  const handleRegionSelection = useCallback((region: string) => {
-    setSelectedRegion(region);
-    setIsRegionExpanded(false);
-  }, []);
-
-  const toggleRegionDropdown = useCallback(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsRegionExpanded((prev) => !prev);
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -45,7 +29,7 @@ const Settings = () => {
             <TouchableOpacity
               style={styles.option}
               activeOpacity={0.7}
-              onPress={option.id === 3 ? toggleRegionDropdown : option.onPress}
+              // onPress={option.id === 3 ? toggleRegionDropdown : option.onPress}
             >
               <View style={styles.optionContent}>
                 <MyText style={styles.optionText}>{option.text}</MyText>
@@ -70,40 +54,12 @@ const Settings = () => {
                     />
                   </View>
                 )}
-                {option.id === 3 && (
-                  <Feather
-                    name={isRegionExpanded ? "chevron-up" : "chevron-down"}
-                    size={22}
-                    color={primaryColor}
-                    style={styles.icon}
-                  />
-                )}
               </View>
             </TouchableOpacity>
 
-            {option.id === 3 && isRegionExpanded && (
+            {option.id === 3 && (
               <View style={styles.dropdown}>
-                {regionOptions.map((region) => (
-                  <TouchableOpacity
-                    key={region}
-                    onPress={() => handleRegionSelection(region)}
-                    style={styles.regionItem}
-                    activeOpacity={0.6}
-                  >
-                    <MyText style={styles.regionText}>{region}</MyText>
-                    <MaterialCommunityIcons
-                      name={
-                        selectedRegion === region
-                          ? "radiobox-marked"
-                          : "radiobox-blank"
-                      }
-                      size={20}
-                      color={
-                        selectedRegion === region ? primaryColor : "#A0A0A0"
-                      }
-                    />
-                  </TouchableOpacity>
-                ))}
+                <MyText style={styles.regionText}>Calender View</MyText>
               </View>
             )}
           </View>
