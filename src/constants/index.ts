@@ -155,6 +155,84 @@ export const deviceList = [
       },
     ],
   },
+  {
+    id: 5,
+    name: "Base Station 5",
+    deviceInfo: [
+      {
+        id: 1,
+        latitude: 24.8607,
+        longitude: 67.0011,
+        title: "Karachi Port",
+        details: [
+          "One of the busiest ports in South Asia",
+          "Handles a large portion of Pakistan's trade",
+          "Located near the Arabian Sea",
+        ],
+      },
+      {
+        id: 2,
+        latitude: 24.9276,
+        longitude: 67.0325,
+        title: "Safari Park",
+        details: [
+          "Popular recreational park in Karachi",
+          "Features a zoo, amusement rides, and picnic spots",
+          "Established in 1970",
+        ],
+      },
+      {
+        id: 3,
+        latitude: 24.8915,
+        longitude: 67.0652,
+        title: "National Stadium",
+        details: [
+          "Largest cricket stadium in Pakistan",
+          "Hosts international and domestic cricket matches",
+          "Capacity of around 34,000 spectators",
+        ],
+      },
+    ],
+  },
+  {
+    id: 6,
+    name: "Base Station 6",
+    deviceInfo: [
+      {
+        id: 1,
+        latitude: 24.86,
+        longitude: 67.01,
+        title: "Empress Market",
+        details: [
+          "Historic market in Karachi built during British rule",
+          "Famous for fresh produce and local goods",
+          "Built in the 1880s",
+        ],
+      },
+      {
+        id: 2,
+        latitude: 24.9361,
+        longitude: 67.0196,
+        title: "PAF Museum",
+        details: [
+          "Museum dedicated to the Pakistan Air Force",
+          "Displays aircraft, weapons, and aviation history",
+          "Located near Shahrah-e-Faisal",
+        ],
+      },
+      {
+        id: 3,
+        latitude: 24.8608,
+        longitude: 67.0647,
+        title: "Frere Hall",
+        details: [
+          "Historic building from the British colonial era",
+          "Now used as an art gallery and library",
+          "Built in 1865",
+        ],
+      },
+    ],
+  },
 ];
 
 export const settingsOptions = [
