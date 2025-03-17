@@ -28,7 +28,10 @@ const MapView = () => {
 
   return (
     <View style={styles.container}>
-      <MapComponent deviceInfo={device.deviceInfo} onMarkerPress={handleMarkerPress} />
+      <MapComponent
+        deviceInfo={device?.deviceInfo!}
+        onMarkerPress={handleMarkerPress}
+      />
       <BottomSheetComponent
         visible={isBottomSheetVisible}
         details={selectedDetails?.length ? selectedDetails : []}
