@@ -28,17 +28,20 @@ const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
   const [selectedDevice, setDeviceSelected] = useState<Device>();
   const dispatch = useDispatch();
+  
+  useEffect(() => {
+    const devices = DatabaseService.getAllDevices();
+    if (devices.length > 0) {
+      console.log("Stored Devices:", JSON.stringify(devices));
+    }
+  }, [dispatch]);
 
   const handleDeviceSelect = async (device: Device) => {
-    try {
-      await DatabaseService.saveDevice(device);
-      dispatch(selectDevice(device));
-      navigation.navigate("BottomTabs", {
-        device: device,
-      });
-    } catch (error) {
-      console.error("Error saving device:", error);
-    }
+    dispatch(selectDevice(device));
+    DatabaseService.saveDevice(device);
+    navigation.navigate("BottomTabs", {
+      device: device,
+    });
   };
 
   return (

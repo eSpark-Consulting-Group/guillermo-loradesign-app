@@ -1,130 +1,118 @@
-import { Device, DeviceInfo } from "@/src/types";
-import { getDatabase } from "..";
-import { downloadDeviceInfoCSV } from "../csvUtil";
+import Realm from "realm";
+import { DeviceSchema, DeviceInfoSchema } from "../models/schemas";
+import RealmMigrationService from "../migration/RealmMigrationService";
+import { store } from "../../store";
+import { setDevices } from "../../features/device/deviceSlice";
+import { Device } from "@/src/types";
 
 class DatabaseService {
-    async saveDevice(device: Device) {
-        try {
-          const database = await getDatabase();
-          let deviceId = device.id;
-          const existingDevice = await database.getFirstAsync<Device>(
-            'SELECT * FROM devices WHERE id = ?',
-            [deviceId]
-          );
-    
-          if (existingDevice) {
-            await database.runAsync(
-              'UPDATE devices SET name = ? WHERE id = ?',
-              [device.name, deviceId]
-            );
-            console.log("Device updated successfully");
-          } else {
-            await database.runAsync(
-              'INSERT INTO devices (id, name) VALUES (?, ?)',  // Insert with device.id
-              [deviceId, device.name]
-            );
-            console.log("Device added successfully");
-          }
-    
-          await database.execAsync('BEGIN TRANSACTION;');
-    
-          try {
-            await database.runAsync(
-              'DELETE FROM device_info WHERE device_id = ?',
-              [deviceId]
-            );
-    
-            for (const info of device.deviceInfo) {
-              const existingDeviceInfo = await database.getFirstAsync(
-                'SELECT * FROM device_info WHERE id = ?',
-                [info.id]
-              );
-    
-              if (existingDeviceInfo) {
-                await database.runAsync(
-                  'UPDATE device_info SET device_id = ?, latitude = ?, longitude = ?, title = ?, details = ? WHERE id = ?',
-                  [deviceId, info.latitude, info.longitude, info.title, JSON.stringify(info.details), info.id]
-                );
-                console.log(`Device info with id ${info.id} updated successfully`);
-              } else {
-                await database.runAsync(
-                  'INSERT INTO device_info (device_id, latitude, longitude, title, details) VALUES (?, ?, ?, ?, ?)',
-                  [deviceId, info.latitude, info.longitude, info.title, JSON.stringify(info.details)]
-                );
-                console.log(`Device info with id ${info.id} added successfully`);
-              }
-            }
-    
-            await database.execAsync('COMMIT;');
-            console.log("Device info saved successfully");
-          } catch (error) {
-            await database.execAsync('ROLLBACK;');
-            console.error("Transaction failed, rolled back:", error);
-            throw error;
-          }
-    
-          return deviceId; // Return the device ID
-        } catch (error) {
-          console.error("Error saving device:", error);
-          throw error;
-        }
-      }
-  async getAllDevices(): Promise<any[]> {
+  private static instance: DatabaseService;
+  private realm: Realm;
+
+  private constructor() {
+    this.realm = new Realm({
+      schema: [DeviceSchema, DeviceInfoSchema],
+      schemaVersion: 1,
+      onMigration: RealmMigrationService.handleMigration,
+    });
+
+    this.syncDevicesWithStorage();
+  }
+
+  public static getInstance(): DatabaseService {
+    if (!DatabaseService.instance) {
+      DatabaseService.instance = new DatabaseService();
+    }
+    return DatabaseService.instance;
+  }
+
+  private syncDevicesWithStorage(): void {
+    const allDevices = this.getAllDevices();
+    store.dispatch(setDevices(allDevices));
+  }
+
+  saveDevice(device: Device): void {
     try {
-      const database = await getDatabase();
-      const rows = await database.getAllAsync(`
-        SELECT devices.id, devices.name, device_info.id AS device_info_id, device_info.latitude, 
-               device_info.longitude, device_info.title, device_info.details
-        FROM devices
-        LEFT JOIN device_info ON devices.id = device_info.device_id
-      `);
-
-      const devicesMap = new Map<number, Device>();
-
-      rows.forEach((row: any) => {
-        const { id, name, device_info_id, latitude, longitude, title, details } = row;
-        let device = devicesMap.get(id);
-
-        if (!device) {
-          device = {
-            id,
-            name,
-            deviceInfo: []
-          };
-          devicesMap.set(id, device);
+      this.realm.write(() => {
+        let existingDevice = this.realm.objectForPrimaryKey("Device", device.id);
+  
+        if (existingDevice) {
+          existingDevice.name = device.name;
+          device.deviceInfo.forEach((info) => {
+            let existingInfo = this.realm.objectForPrimaryKey("DeviceInfo", info.id);
+            if (existingInfo) {
+              existingInfo.latitude = info.latitude;
+              existingInfo.longitude = info.longitude;
+              existingInfo.title = info.title;
+              existingInfo.details = info.details;
+            } else {
+              this.realm.create("DeviceInfo", info);
+            }
+          });
+  
+          existingDevice.deviceInfo = device.deviceInfo.map((info) =>
+            this.realm.objectForPrimaryKey("DeviceInfo", info.id)
+          );
+        } else {
+          this.realm.create("Device", {
+            id: device.id,
+            name: device.name,
+            deviceInfo: device.deviceInfo.map((info) => ({
+              id: info.id,
+              latitude: info.latitude,
+              longitude: info.longitude,
+              title: info.title,
+              details: info.details,
+            })),
+          });
         }
-
-        device.deviceInfo.push({
-          id: device_info_id,
-          latitude,
-          longitude,
-          title,
-          details: JSON.parse(details)
-        });
       });
-
-      return Array.from(devicesMap.values());
+  
+      const updatedDevices = store.getState().device.allDevices.filter((d) => d.id !== device.id);
+      store.dispatch(setDevices([...updatedDevices, device]));
+      console.log("Device saved successfully!");
     } catch (error) {
-      console.error("Error fetching devices:", error);
-      throw error;
+      console.error("Error saving to Realm:", error);
     }
   }
-
-  async getAllDevicesList(): Promise<Device[]> {
-    return this.getAllDevices();
+  
+  getAllDevices(): Device[] {
+    const results = this.realm.objects<DeviceSchema>("Device");
+    return results.map((device) => ({
+      id: device.id,
+      name: device.name,
+      deviceInfo: device.deviceInfo.map((info) => ({
+        id: info.id,
+        latitude: info.latitude,
+        longitude: info.longitude,
+        title: info.title,
+        details: info.details,
+      })),
+    }));
   }
 
-  async downloadDeviceInfoCSVFile() {
-    try {
-      const database = await getDatabase();
-      const path = await downloadDeviceInfoCSV(database);
-      console.log("CSV file saved to:", path);
-      return path;
-    } catch (error) {
-      console.error("Failed to download CSV:", error);
-      throw error;
+  getDeviceById(id: number): Device | undefined {
+    const device = this.realm.objectForPrimaryKey<DeviceSchema>("Device", id);
+    return device
+      ? {
+          id: device.id,
+          name: device.name,
+          deviceInfo: device.deviceInfo.map((info) => ({
+            id: info.id,
+            latitude: info.latitude,
+            longitude: info.longitude,
+            title: info.title,
+            details: info.details,
+          })),
+        }
+      : undefined;
+  }
+
+  closeRealm(): void {
+    if (!this.realm.isClosed) {
+      this.realm.close();
     }
   }
 }
 
-export default new DatabaseService();
+export default DatabaseService.getInstance();
