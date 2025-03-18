@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.guillermoloradesignapp"
+    namespace 'com.anonymous.guillermoloradesignapp'
     defaultConfig {
-        applicationId 'com.guillermoloradesignapp'
+        applicationId 'com.anonymous.guillermoloradesignapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
