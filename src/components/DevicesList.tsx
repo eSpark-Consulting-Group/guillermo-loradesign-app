@@ -7,8 +7,8 @@ import { primaryColor } from "../constants/Colors";
 
 interface DevicesListProps {
   devices: Device[];
-  selectedDevice?: Device;
-  onDeviceSelect: (device: Device) => void;
+  selectedDevice?: Device|null;
+  onDeviceSelect?: (device: Device) => void;
 }
 
 const DevicesList: React.FC<DevicesListProps> = ({
@@ -16,14 +16,15 @@ const DevicesList: React.FC<DevicesListProps> = ({
   selectedDevice,
   onDeviceSelect,
 }) => {
+
   const renderItem = ({ item: device }: { item: Device }) => (
     <TouchableOpacity
       key={device.id}
-      onPress={() => onDeviceSelect && onDeviceSelect(device)}
       style={[
         styles.deviceItem,
         selectedDevice?.id === device.id && styles.selectedDevice,
       ]}
+      onPress={() => onDeviceSelect && onDeviceSelect(device)}
     >
       <View style={styles.textContainer}>
         <MyText style={styles.deviceName}>{device.name}</MyText>
@@ -39,7 +40,6 @@ const DevicesList: React.FC<DevicesListProps> = ({
       />
     </TouchableOpacity>
   );
-
   return (
     <FlatList
       data={devices}

@@ -46,11 +46,10 @@ export const deviceList = [
     name: "Base Station 2",
     deviceInfo: [
       {
-        id: 1,
-        latitude: 24.8607,
-        longitude: 67.0011,
-        altitude: 10,
-        title: "Karachi Port",
+        id: 4,
+        latitude: 24.8934,
+        longitude: 67.0281,
+        title: "University of Karachi",
         details: [
           "One of the busiest ports in South Asia",
           "Handles a large portion of Pakistan's trade",
@@ -58,11 +57,10 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
-        latitude: 24.9276,
-        longitude: 67.0325,
-        altitude: 15,
-        title: "Safari Park",
+        id: 5,
+        latitude: 24.9208,
+        longitude: 67.0971,
+        title: "Jinnah International Airport",
         details: [
           "Popular recreational park in Karachi",
           "Features a zoo, amusement rides, and picnic spots",
@@ -70,11 +68,10 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
-        latitude: 24.8915,
-        longitude: 67.0652,
-        altitude: 18,
-        title: "National Stadium",
+        id: 6,
+        latitude: 24.8975,
+        longitude: 67.0745,
+        title: "Mazar-e-Quaid",
         details: [
           "Largest cricket stadium in Pakistan",
           "Hosts international and domestic cricket matches",
@@ -88,11 +85,10 @@ export const deviceList = [
     name: "Base Station 3",
     deviceInfo: [
       {
-        id: 1,
-        latitude: 24.86,
-        longitude: 67.01,
-        altitude: 12,
-        title: "Empress Market",
+        id: 7,
+        latitude: 24.8934,
+        longitude: 67.0281,
+        title: "University of Karachi",
         details: [
           "Historic market in Karachi built during British rule",
           "Famous for fresh produce and local goods",
@@ -100,11 +96,10 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
-        latitude: 24.927,
-        longitude: 67.1111,
-        altitude: 22,
-        title: "Mohatta Palace",
+        id: 8,
+        latitude: 24.9208,
+        longitude: 67.0971,
+        title: "Jinnah International Airport",
         details: [
           "A historic palace built in 1927",
           "Now serves as a museum and cultural center",
@@ -112,11 +107,10 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
-        latitude: 24.835,
-        longitude: 67.073,
-        altitude: 14,
-        title: "Quaid-e-Azam House Museum",
+        id: 9,
+        latitude: 24.8975,
+        longitude: 67.0745,
+        title: "Mazar-e-Quaid",
         details: [
           "Former residence of Quaid-e-Azam Muhammad Ali Jinnah",
           "Preserved as a national museum",
@@ -130,11 +124,10 @@ export const deviceList = [
     name: "Base Station 4",
     deviceInfo: [
       {
-        id: 1,
-        latitude: 24.813,
-        longitude: 67.0331,
-        altitude: 16,
-        title: "Dolmen Mall Clifton",
+        id: 10,
+        latitude: 24.8934,
+        longitude: 67.0281,
+        title: "University of Karachi",
         details: [
           "One of the largest shopping malls in Karachi",
           "Features international and local brands",
@@ -142,11 +135,10 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
-        latitude: 24.8505,
-        longitude: 67.0221,
-        altitude: 14,
-        title: "Clifton Beach",
+        id: 11,
+        latitude: 24.9208,
+        longitude: 67.0971,
+        title: "Jinnah International Airport",
         details: [
           "One of the most famous beaches in Karachi",
           "Popular for families and tourists",
@@ -154,11 +146,10 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
-        latitude: 24.8512,
-        longitude: 67.0143,
-        altitude: 17,
-        title: "Bahria Icon Tower",
+        id: 12,
+        latitude: 24.8975,
+        longitude: 67.0745,
+        title: "Mazar-e-Quaid",
         details: [
           "Tallest skyscraper in Pakistan",
           "Located in Clifton, Karachi",
@@ -172,7 +163,7 @@ export const deviceList = [
     name: "Base Station 5",
     deviceInfo: [
       {
-        id: 1,
+        id: 13,
         latitude: 24.8607,
         longitude: 67.0011,
         altitude: 10,
@@ -184,7 +175,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
+        id: 14,
         latitude: 24.9276,
         longitude: 67.0325,
         altitude: 15,
@@ -196,7 +187,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
+        id: 15,
         latitude: 24.8915,
         longitude: 67.0652,
         altitude: 18,
@@ -214,7 +205,7 @@ export const deviceList = [
     name: "Base Station 6",
     deviceInfo: [
       {
-        id: 1,
+        id: 16,
         latitude: 24.8532,
         longitude: 67.0167,
         altitude: 14,
@@ -226,7 +217,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 2,
+        id: 17,
         latitude: 24.9361,
         longitude: 67.0196,
         altitude: 19,
@@ -238,7 +229,7 @@ export const deviceList = [
         ],
       },
       {
-        id: 3,
+        id: 18,
         latitude: 24.8608,
         longitude: 67.0647,
         altitude: 21,

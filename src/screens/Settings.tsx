@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,11 +6,16 @@ import {
   TouchableOpacity,
   UIManager,
   Platform,
+  Alert,
 } from "react-native";
 import { MyText } from "../components/MyText";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { settingsOptions } from "../constants";
+import { Feather } from "@expo/vector-icons";
 import { primaryColor } from "../constants/Colors";
+import DatabaseService from "../database/services/DatabaseService";
+import { settingsOptions } from "../constants";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { downloadDeviceInfoCSV } from "../database/csvUtil";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -19,8 +24,23 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
 const Settings = () => {
+  const selectedDevice = useSelector((state: RootState) => state.device.selectedDevice);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    try {
+      await downloadDeviceInfoCSV(selectedDevice?.deviceInfo ?? []);
+      Alert.alert("Download Complete", "The CSV file has been saved successfully.");
+    } catch (error) {
+      console.error("Error downloading CSV:", error);
+      Alert.alert("Download Failed", "An error occurred while downloading the file.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -29,7 +49,7 @@ const Settings = () => {
             <TouchableOpacity
               style={styles.option}
               activeOpacity={0.7}
-              // onPress={option.id === 3 ? toggleRegionDropdown : option.onPress}
+              onPress={option.id === 1 ? handleDownload : option.onPress}
             >
               <View style={styles.optionContent}>
                 <MyText style={styles.optionText}>{option.text}</MyText>

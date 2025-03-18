@@ -24,17 +24,16 @@ const TableComponent = ({ data }: TableComponentProps) => {
   const navigation = useNavigation<TableDetailsProps["navigation"]>();
 
   const handlePress = (device: Device) => {
-    navigation.navigate("Map", { device });
+    navigation.navigate("Map", { device, fromCoordRedirect: true });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <MyText style={[styles.headerText, { width: "15%" }]}>ID</MyText>
-        <MyText style={[styles.headerText, { width: "25%" }]}>NAME</MyText>
-        <MyText style={[styles.headerText, { width: "60%" }]}>
-          DEVICE INFO
-        </MyText>
+      <MyText style={[styles.headerText, { width: "30%" }]}>DEVICE ID</MyText>
+        <MyText style={[styles.headerText, { width: "20%" }]}>Date</MyText>
+        <MyText style={[styles.headerText, { width: "65%" }]}>GNSS Location (Latitude,Longitude)</MyText>
+
       </View>
 
       <FlatList
@@ -49,17 +48,12 @@ const TableComponent = ({ data }: TableComponentProps) => {
             ]}
             onPress={() => handlePress(item)}
           >
-            <MyText style={[styles.cell, { width: "14%" }]}>{item.id}</MyText>
-            <MyText style={[styles.cell, { width: "24%" }]}>{item.name}</MyText>
-            <View style={[styles.deviceInfoContainer, { width: "58%" }]}>
-              {item.deviceInfo.map((device) => (
-                <Pressable key={device.id} style={styles.deviceInfoCard}>
-                  <MyText style={styles.deviceTitle}>{device.title}</MyText>
-                  <MyText style={styles.deviceText}>
-                    {device.details.join(", ")}
-                  </MyText>
+            <MyText style={[styles.cell, { width: "30%" }]}>{item.id}</MyText>
+            <MyText style={[styles.cell, { width: "25%" }]}>{"3/18/2025"}</MyText>
+            <View style={[styles.deviceInfoContainer, { width: "55%" }]}>
+                <Pressable key={item.deviceInfo[1].id} onPress={() => handlePress(item)}>
+                  <MyText style={styles.deviceTitle}> {`${item.deviceInfo[1].latitude}, ${item.deviceInfo[1].longitude}`}</MyText>
                 </Pressable>
-              ))}
             </View>
           </Pressable>
         )}
@@ -99,7 +93,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
+  alignItems: "center",
     padding: 12,
     marginVertical: 6,
     borderRadius: 10,
@@ -117,7 +112,9 @@ const styles = StyleSheet.create({
   },
   cell: {
     // flex: 1,
-    textAlign: "left",
+    textAlign:"center",
+    justifyContent: "center",
+    alignItems: "center",
     fontSize: 14,
     fontWeight: "500",
     color: "#343a40",
@@ -125,6 +122,8 @@ const styles = StyleSheet.create({
   deviceInfoContainer: {
     // flex: 1,
     // alignSelf: "flex-start",
+    justifyContent: "center",
+  alignItems: "center",
   },
   deviceInfoCard: {
     backgroundColor: "#e9f5ff",
@@ -140,6 +139,7 @@ const styles = StyleSheet.create({
   deviceTitle: {
     fontSize: 14,
     fontWeight: "bold",
+    textAlign:"center",
     color: "#007bff",
     marginBottom: 4,
   },
