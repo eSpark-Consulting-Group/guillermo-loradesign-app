@@ -1,16 +1,21 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  LayoutAnimation,
   UIManager,
   Platform,
+  Alert,
 } from "react-native";
 import { MyText } from "../components/MyText";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { primaryColor } from "../constants/Colors";
+import DatabaseService from "../database/services/DatabaseService";
 import { settingsOptions } from "../constants";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { downloadDeviceInfoCSV } from "../database/csvUtil";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -19,22 +24,22 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
 const Settings = () => {
-  const [selectedRegion, setSelectedRegion] = useState<string>("Region 1");
-  const [isRegionExpanded, setIsRegionExpanded] = useState(false);
+  const selectedDevice = useSelector((state: RootState) => state.device.selectedDevice);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  const regionOptions = useMemo(() => ["Region 1", "Region 2", "Region 3"], []);
-
-  const handleRegionSelection = useCallback((region: string) => {
-    setSelectedRegion(region);
-    setIsRegionExpanded(false);
-  }, []);
-
-  const toggleRegionDropdown = useCallback(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsRegionExpanded((prev) => !prev);
-  }, []);
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    try {
+      await downloadDeviceInfoCSV(selectedDevice?.deviceInfo ?? []);
+      Alert.alert("Download Complete", "The CSV file has been saved successfully.");
+    } catch (error) {
+      console.error("Error downloading CSV:", error);
+      Alert.alert("Download Failed", "An error occurred while downloading the file.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,17 +49,17 @@ const Settings = () => {
             <TouchableOpacity
               style={styles.option}
               activeOpacity={0.7}
-              onPress={option.id === 3 ? toggleRegionDropdown : option.onPress}
+              onPress={option.id === 1 ? handleDownload : option.onPress}
             >
               <View style={styles.optionContent}>
                 <MyText style={styles.optionText}>{option.text}</MyText>
               </View>
               <View style={styles.rightSection}>
-              {option.id === 1 && (
+                {option.id === 1 && (
                   <Feather
-                    name={option.icon}
+                    name={option.icon as any}
                     size={22}
-                    color="#007AFF"
+                    color={primaryColor}
                     style={styles.icon}
                   />
                 )}
@@ -69,38 +74,12 @@ const Settings = () => {
                     />
                   </View>
                 )}
-                {option.id === 3 && (
-                  <Feather
-                  name={isRegionExpanded ? "chevron-up" : "chevron-down"}
-                  size={22}
-                  color="#007AFF"
-                  style={styles.icon}
-                />
-                )}
               </View>
             </TouchableOpacity>
 
-            {option.id === 3 && isRegionExpanded && (
+            {option.id === 3 && (
               <View style={styles.dropdown}>
-                {regionOptions.map((region) => (
-                  <TouchableOpacity
-                    key={region}
-                    onPress={() => handleRegionSelection(region)}
-                    style={styles.regionItem}
-                    activeOpacity={0.6}
-                  >
-                    <MyText style={styles.regionText}>{region}</MyText>
-                    <MaterialCommunityIcons
-                      name={
-                        selectedRegion === region
-                          ? "radiobox-marked"
-                          : "radiobox-blank"
-                      }
-                      size={20}
-                      color={selectedRegion === region ? "#007AFF" : "#A0A0A0"}
-                    />
-                  </TouchableOpacity>
-                ))}
+                <MyText style={styles.regionText}>Calender View</MyText>
               </View>
             )}
           </View>

@@ -1,68 +1,108 @@
 import { View, FlatList, StyleSheet } from "react-native";
 import React from "react";
 import { MyText } from "./MyText";
+import { primaryColor } from "../constants/Colors";
+import { useNavigation } from "@react-navigation/native";
+import { Pressable } from "react-native";
+import { Device } from "../types";
+import { StackScreenProps } from "@react-navigation/stack";
+import {
+  RootStackParamList,
+  BottomTabParamList,
+} from "../types/navigationParams";
 
 interface TableComponentProps {
-  data: { age: string; name: string; employeeID: string }[];
+  data: Device[];
 }
 
+type TableDetailsProps = StackScreenProps<
+  RootStackParamList & BottomTabParamList,
+  "Map"
+>;
+
 const TableComponent = ({ data }: TableComponentProps) => {
+  const navigation = useNavigation<TableDetailsProps["navigation"]>();
+
+  const handlePress = (device: Device) => {
+    navigation.navigate("Map", { device, fromCoordRedirect: true });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <MyText style={[styles.headerText, styles.headerCell]}>AGE</MyText>
-        <MyText style={[styles.headerText, styles.headerCell]}>NAME</MyText>
-        <MyText style={[styles.headerText, styles.headerCell]}>EMPLOYEE ID</MyText>
+      <MyText style={[styles.headerText, { width: "30%" }]}>DEVICE ID</MyText>
+        <MyText style={[styles.headerText, { width: "20%" }]}>Date</MyText>
+        <MyText style={[styles.headerText, { width: "65%" }]}>GNSS Location (Latitude,Longitude)</MyText>
+
       </View>
 
       <FlatList
         data={data}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
-          <View style={[styles.row, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
-            <MyText style={styles.cell}>{item.age}</MyText>
-            <MyText style={styles.cell}>{item.name}</MyText>
-            <MyText style={styles.cell}>{item.employeeID}</MyText>
-          </View>
+          <Pressable
+            style={[
+              styles.row,
+              index % 2 === 0 ? styles.evenRow : styles.oddRow,
+            ]}
+            onPress={() => handlePress(item)}
+          >
+            <MyText style={[styles.cell, { width: "30%" }]}>{item.id}</MyText>
+            <MyText style={[styles.cell, { width: "25%" }]}>{"3/18/2025"}</MyText>
+            <View style={[styles.deviceInfoContainer, { width: "55%" }]}>
+                <Pressable key={item.deviceInfo[1].id} onPress={() => handlePress(item)}>
+                  <MyText style={styles.deviceTitle}> {`${item.deviceInfo[1].latitude}, ${item.deviceInfo[1].longitude}`}</MyText>
+                </Pressable>
+            </View>
+          </Pressable>
         )}
       />
     </View>
   );
 };
+
 export default TableComponent;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#f8f9fa",
-    borderRadius: 10,
+    borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 6,
+    elevation: 4,
+    padding: "2%",
+    margin: "3%",
+    marginBottom: "18%",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
+    backgroundColor: primaryColor,
     paddingVertical: 12,
-    backgroundColor: "#343a40",
-    borderRadius: 8,
+    borderRadius: 10,
   },
   headerText: {
     fontWeight: "bold",
-    flex: 1,
-    textAlign: "center",
+    textAlign: "left",
     color: "#fff",
-  },
-  headerCell: {
-    paddingVertical: 10,
+    fontSize: 15,
+    paddingLeft: 12,
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    justifyContent: "center",
+  alignItems: "center",
+    padding: 12,
+    marginVertical: 6,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
   },
   evenRow: {
     backgroundColor: "#ffffff",
@@ -71,10 +111,40 @@ const styles = StyleSheet.create({
     backgroundColor: "#f1f3f5",
   },
   cell: {
-    flex: 1,
-    textAlign: "center",
-    paddingVertical: 4,
-    fontSize: 16,
-    color: "#212529",
+    // flex: 1,
+    textAlign:"center",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#343a40",
+  },
+  deviceInfoContainer: {
+    // flex: 1,
+    // alignSelf: "flex-start",
+    justifyContent: "center",
+  alignItems: "center",
+  },
+  deviceInfoCard: {
+    backgroundColor: "#e9f5ff",
+    padding: "4%",
+    borderRadius: 8,
+    marginBottom: "10%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  deviceTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign:"center",
+    color: "#007bff",
+    marginBottom: 4,
+  },
+  deviceText: {
+    fontSize: 13,
+    color: "#495057",
   },
 });
