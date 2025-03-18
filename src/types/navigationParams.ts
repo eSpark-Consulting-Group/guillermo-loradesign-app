@@ -6,7 +6,7 @@ export type RootStackParamList = {
 };
 
 export type BottomTabParamList = {
-  Map: { device?: Device };
+  Map: { device?: Device, fromCoordRedirect?:boolean };
   Settings: { device?: Device };
   Table: { device?: Device };
 };
