@@ -24,7 +24,7 @@ const TableComponent = ({ data }: TableComponentProps) => {
   const navigation = useNavigation<TableDetailsProps["navigation"]>();
 
   const handlePress = (device: Device) => {
-    navigation.navigate("Map", { device, fromTable: true });
+    navigation.navigate("Map", { device, fromCoordRedirect: true });
   };
 
   return (
