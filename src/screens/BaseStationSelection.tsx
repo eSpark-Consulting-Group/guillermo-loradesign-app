@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useDispatch, useSelector } from "react-redux";
 import DevicesList from "../components/DevicesList";
 import { MyText } from "../components/MyText";
 import {
@@ -15,6 +15,9 @@ import {
 import { Device } from "../types";
 import { deviceList } from "../constants";
 import { primaryColor, secondaryColor } from "../constants/Colors";
+import { RootState } from "../store";
+import { selectDevice } from "../features/device/deviceSlice";
+import DatabaseService from "../database/services/DatabaseService";
 
 type BaseStationSelectionProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -23,10 +26,22 @@ type BaseStationSelectionProps = StackScreenProps<
 
 const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
-  const [deviceSelected, setDeviceSelected] = useState<Device>();
+  const [selectedDevice, setDeviceSelected] = useState<Device>();
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    const devices = DatabaseService.getAllDevices();
+    if (devices.length > 0) {
+      console.log("Stored Devices:", JSON.stringify(devices));
+    }
+  }, [dispatch]);
 
-  const handleDeviceSelect = (device: Device) => {
-    setDeviceSelected(device);
+  const handleDeviceSelect = async (device: Device) => {
+    dispatch(selectDevice(device));
+    DatabaseService.saveDevice(device);
+    navigation.navigate("BottomTabs", {
+      device: device,
+    });
   };
 
   return (
@@ -34,23 +49,21 @@ const BaseStationSelection = () => {
       <View style={{ flex: 1, marginTop: -20, marginBottom: 20 }}>
         <DevicesList
           devices={deviceList}
-          selectedDevice={deviceSelected}
-          onDeviceSelect={handleDeviceSelect}
+          selectedDevice={selectedDevice}
+          onDeviceSelect={setDeviceSelected}
         />
       </View>
 
       <TouchableOpacity
-        disabled={!deviceSelected}
+        disabled={!selectedDevice}
         onPress={() => {
-          if (deviceSelected) {
-            navigation.navigate("BottomTabs", {
-              device: deviceSelected,
-            });
+          if (selectedDevice) {
+            handleDeviceSelect(selectedDevice);
           }
         }}
         style={[
           styles.buttonWrapper,
-          !deviceSelected ? styles.buttonDisabled : {},
+          !selectedDevice ? styles.buttonDisabled : {},
         ]}
       >
         <LinearGradient
@@ -68,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop:12,
+    paddingTop: 12,
     paddingBottom: 30,
     backgroundColor: "#ffffff",
   },
