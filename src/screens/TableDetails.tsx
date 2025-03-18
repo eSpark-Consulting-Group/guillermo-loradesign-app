@@ -56,21 +56,6 @@ const TableDetails = () => {
     // }
   };
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={exportCSV}>
-          <FontAwesome
-            name="download"
-            size={24}
-            color={primaryColor}
-            style={{ marginRight: 15 }}
-          />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
   return (
     <View style={styles.container}>
       <TableComponent data={deviceList} />

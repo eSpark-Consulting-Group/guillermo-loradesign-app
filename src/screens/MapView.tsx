@@ -3,7 +3,7 @@ import { View, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import MapComponent from "../components/MapComponent";
 import { DeviceInfo } from "../types";
 import BottomSheetComponent from "../components/BottomSheetComponent";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import {
   BottomTabParamList,
@@ -19,20 +19,22 @@ const MapView = () => {
   const [selectedDetails, setSelectedDetails] = useState<string[]>();
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
-  const navigation = useNavigation<MapViewProps["navigation"]>();
 
-  const { device } = route.params;
+  const { device,fromTable } = route.params;
+  const singleDevice = fromTable ? device?.deviceInfo?.[1] : null;
 
   const handleMarkerPress = (device: DeviceInfo) => {
-    setSelectedDetails(device.details);
-    setBottomSheetVisible(true);
+    if (!fromTable) {
+      setSelectedDetails(device.details);
+      setBottomSheetVisible(true);
+    }
   };
 
   return (
     <View style={styles.container}>
       <MapComponent
-        deviceInfo={device?.deviceInfo!}
-        onMarkerPress={handleMarkerPress}
+      deviceInfo={fromTable ? (singleDevice ? [singleDevice] : []) : device?.deviceInfo ?? []}
+      onMarkerPress={handleMarkerPress}
       />
       <BottomSheetComponent
         visible={isBottomSheetVisible}

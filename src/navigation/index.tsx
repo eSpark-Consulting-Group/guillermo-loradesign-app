@@ -32,7 +32,7 @@ const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
       <Tab.Screen
         name="Map"
         component={MapView}
-        initialParams={{ device }}
+        initialParams={{ device,fromTable: false }}
         options={{
           tabBarIcon: (props) => (
             <Ionicons name="map" size={props.size} color={props.color} />
