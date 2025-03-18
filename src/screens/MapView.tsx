@@ -20,11 +20,11 @@ const MapView = () => {
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
 
-  const { device,fromTable } = route.params;
-  const singleDevice = fromTable ? device?.deviceInfo?.[1] : null;
+  const { device,fromCoordRedirect } = route.params;
+  const singleDevice = fromCoordRedirect ? device?.deviceInfo?.[1] : null;
 
   const handleMarkerPress = (device: DeviceInfo) => {
-    if (!fromTable) {
+    if (!fromCoordRedirect) {
       setSelectedDetails(device.details);
       setBottomSheetVisible(true);
     }
@@ -33,7 +33,7 @@ const MapView = () => {
   return (
     <View style={styles.container}>
       <MapComponent
-      deviceInfo={fromTable ? (singleDevice ? [singleDevice] : []) : device?.deviceInfo ?? []}
+      deviceInfo={fromCoordRedirect ? (singleDevice ? [singleDevice] : []) : device?.deviceInfo ?? []}
       onMarkerPress={handleMarkerPress}
       />
       <BottomSheetComponent
