@@ -30,10 +30,11 @@ const TableComponent = ({ data }: TableComponentProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <MyText style={[styles.headerText, { width: "30%" }]}>DEVICE ID</MyText>
-        <MyText style={[styles.headerText, { width: "20%" }]}>Date</MyText>
-        <MyText style={[styles.headerText, { width: "65%" }]}>GNSS Location (Latitude,Longitude)</MyText>
-
+        <MyText style={[styles.headerText, { width: "20%" }]}>Device ID</MyText>
+        <MyText style={[styles.headerText, { width: "30%" }]}>Date</MyText>
+        <MyText style={[styles.headerText, { width: "50%" }]}>
+          GNSS Location (Latitude,Longitude)
+        </MyText>
       </View>
 
       <FlatList
@@ -48,12 +49,20 @@ const TableComponent = ({ data }: TableComponentProps) => {
             ]}
             onPress={() => handlePress(item)}
           >
-            <MyText style={[styles.cell, { width: "30%" }]}>{item.id}</MyText>
-            <MyText style={[styles.cell, { width: "25%" }]}>{"3/18/2025"}</MyText>
-            <View style={[styles.deviceInfoContainer, { width: "55%" }]}>
-                <Pressable key={item.deviceInfo[1].id} onPress={() => handlePress(item)}>
-                  <MyText style={styles.deviceTitle}> {`${item.deviceInfo[1].latitude}, ${item.deviceInfo[1].longitude}`}</MyText>
-                </Pressable>
+            <MyText style={[styles.cell, { width: "20%" }]}>{item.id}</MyText>
+            <MyText style={[styles.cell, { width: "30%" }]}>
+              {"3/18/2025"}
+            </MyText>
+            <View style={[styles.deviceInfoContainer, { width: "50%" }]}>
+              <Pressable
+                key={item.deviceInfo[1].id}
+                onPress={() => handlePress(item)}
+              >
+                <MyText style={styles.deviceTitle}>
+                  {" "}
+                  {`${item.deviceInfo[1].latitude}, ${item.deviceInfo[1].longitude}`}
+                </MyText>
+              </Pressable>
             </View>
           </Pressable>
         )}
@@ -86,15 +95,17 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: "bold",
-    textAlign: "left",
+    textAlign: "center",
     color: "#fff",
     fontSize: 15,
-    paddingLeft: 12,
+    // backgroundColor: "yellow",
+    // paddingLeft: 12,
+    // borderWidth: 1,
   },
   row: {
     flexDirection: "row",
-    justifyContent: "center",
-  alignItems: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 12,
     marginVertical: 6,
     borderRadius: 10,
@@ -112,7 +123,7 @@ const styles = StyleSheet.create({
   },
   cell: {
     // flex: 1,
-    textAlign:"center",
+    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     fontSize: 14,
@@ -122,8 +133,8 @@ const styles = StyleSheet.create({
   deviceInfoContainer: {
     // flex: 1,
     // alignSelf: "flex-start",
-    justifyContent: "center",
-  alignItems: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   deviceInfoCard: {
     backgroundColor: "#e9f5ff",
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
   deviceTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    textAlign:"center",
+    textAlign: "center",
     color: "#007bff",
     marginBottom: 4,
   },
