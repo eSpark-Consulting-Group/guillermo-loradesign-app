@@ -1,5 +1,6 @@
 import { DeviceInfo } from "@/src/types";
-import { Platform, PermissionsAndroid, Alert } from "react-native";
+import { showToast } from "@/src/utils/showToast";
+import { Platform, PermissionsAndroid } from "react-native";
 import RNFS from "react-native-fs";
 
 export const downloadDeviceInfoCSV = async (deviceInfo: DeviceInfo[]) => {
@@ -27,7 +28,7 @@ export const downloadDeviceInfoCSV = async (deviceInfo: DeviceInfo[]) => {
       );
 
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Alert.alert("Permission Denied", "Storage permission is required to save the file.");
+        showToast("Storage permission is required to save the file.","error");
         return;
       }
 

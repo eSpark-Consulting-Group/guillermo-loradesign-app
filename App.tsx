@@ -7,6 +7,7 @@ import { store } from "./src/store";
 import { RealmProvider } from "@realm/react";
 import { DeviceInfoSchema, DeviceSchema } from "./src/database/models/schemas";
 import { Provider } from "react-redux";
+import ToastConfig from "./src/utils/toastConfig";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <StatusBar translucent={true} barStyle={"dark-content"} />
           <SafeAreaProvider style={{ flex: 1 }}>
             <RootStack />
+            <ToastConfig />
           </SafeAreaProvider>
         </NavigationContainer>
         </RealmProvider>

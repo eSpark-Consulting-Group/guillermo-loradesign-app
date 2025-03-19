@@ -5,8 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   UIManager,
-  Platform,
-  Alert,
+  Platform
 } from "react-native";
 import { MyText } from "../components/MyText";
 import { Feather } from "@expo/vector-icons";
@@ -24,6 +23,7 @@ import {
   BottomTabParamList,
   RootStackParamList,
 } from "../types/navigationParams";
+import { showToast } from "../utils/showToast";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -57,16 +57,10 @@ const Settings = () => {
     setIsDownloading(true);
     try {
       await downloadDeviceInfoCSV(selectedDevice?.deviceInfo ?? []);
-      Alert.alert(
-        "Download Complete",
-        "The CSV file has been saved successfully."
-      );
+      showToast("The CSV file has been saved successfully","success")
     } catch (error) {
       console.error("Error downloading CSV:", error);
-      Alert.alert(
-        "Download Failed",
-        "An error occurred while downloading the file."
-      );
+      showToast("An error occurred while downloading the file","error")
     } finally {
       setIsDownloading(false);
     }
@@ -82,7 +76,6 @@ const Settings = () => {
 
     setStartDate(date);
     
-    // After selecting start date, show end date picker
     setTimeout(() => {
       setShowEndPicker(true);
       setDatePickerStep(2);
@@ -100,16 +93,13 @@ const Settings = () => {
     setEndDate(date);
     setDatePickerStep(0);
     
-    // After selecting end date, filter data
     filterDataByDateRange(startDate, date);
   };
 
   const filterDataByDateRange = (start, end) => {
-    // Set start date to beginning of day
     const startTime = new Date(start);
     startTime.setHours(0, 0, 0, 0);
     
-    // Set end date to end of day
     const endTime = new Date(end);
     endTime.setHours(23, 59, 59, 999);
     
@@ -125,11 +115,14 @@ const Settings = () => {
       
       const itemDate = new Date(itemYear, itemMonth, itemDay);
       
-      // Check if the item's date falls within the selected range
       return itemDate >= startTime && itemDate <= endTime;
     });
     
     setFilteredData(filtered);
+
+    if (filtered.length === 0) {
+      showToast("No Data Found","error")
+    }
   };
 
   const handleDateRangeSelect = () => {
