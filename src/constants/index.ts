@@ -264,7 +264,7 @@ export const settingsOptions = [
   {
     id: 3,
     text: "Current Date For Map Display",
-    icon: "chevron-down",
+    icon: "calendar",
     onPress: () => {
       console.log("Current Date For Map Display");
     },
