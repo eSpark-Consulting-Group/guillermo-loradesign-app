@@ -1,8 +1,6 @@
 import Realm from "realm";
 import { DeviceSchema, DeviceInfoSchema } from "../models/schemas";
 import RealmMigrationService from "../migration/RealmMigrationService";
-import { store } from "../../store";
-import { setDevices } from "../../features/device/deviceSlice";
 import { Device } from "@/src/types";
 
 class DatabaseService {
@@ -15,8 +13,6 @@ class DatabaseService {
       schemaVersion: 1,
       onMigration: RealmMigrationService.handleMigration,
     });
-
-    this.syncDevicesWithStorage();
   }
 
   public static getInstance(): DatabaseService {
@@ -24,11 +20,6 @@ class DatabaseService {
       DatabaseService.instance = new DatabaseService();
     }
     return DatabaseService.instance;
-  }
-
-  private syncDevicesWithStorage(): void {
-    const allDevices = this.getAllDevices();
-    store.dispatch(setDevices(allDevices));
   }
 
   saveDevice(device: Device): void {
@@ -67,9 +58,6 @@ class DatabaseService {
           });
         }
       });
-  
-      const updatedDevices = store.getState().device.allDevices.filter((d) => d.id !== device.id);
-      store.dispatch(setDevices([...updatedDevices, device]));
       console.log("Device saved successfully!");
     } catch (error) {
       console.error("Error saving to Realm:", error);
