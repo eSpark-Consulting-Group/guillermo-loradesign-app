@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.guillermoloradesignapp"
+      "bundleIdentifier": "com.anonymous.guillermoloradesignapp",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "This app requires Bluetooth to connect to nearby devices."
+      }
     },
     "android": {
       "adaptiveIcon": {
