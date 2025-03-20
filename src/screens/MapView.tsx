@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import { View, StyleSheet } from "react-native";
 import MapComponent from "../components/MapComponent";
 import { DeviceInfo } from "../types";
 import BottomSheetComponent from "../components/BottomSheetComponent";
