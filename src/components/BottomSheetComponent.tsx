@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    // backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   dismissArea: {
     flex: 1,

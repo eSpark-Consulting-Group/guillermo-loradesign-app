@@ -1,20 +1,29 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { StackScreenProps } from "@react-navigation/stack";
+
 import TableComponent from "../components/TableComponent";
+import { deviceList } from "../constants";
+import {
+  BottomTabParamList,
+  RootStackParamList,
+} from "../types/navigationParams";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+
+type TableDetailsProps = StackScreenProps<
+  RootStackParamList & BottomTabParamList,
+  "Map"
+>;
 
 const TableDetails = () => {
-  const tableData = [
-    { age: "25", name: "John Doe", employeeID: "EMP001" },
-    { age: "30", name: "Jane Smith", employeeID: "EMP002" },
-    { age: "28", name: "Alice Brown", employeeID: "EMP003" },
-    { age: "35", name: "Bob White", employeeID: "EMP004" },
-    { age: "40", name: "Charlie Black", employeeID: "EMP005" },
-    { age: "22", name: "Daisy Green", employeeID: "EMP006" },
-  ];
+  const navigation = useNavigation<TableDetailsProps["navigation"]>();
+  const selectedDevice = useSelector((state: RootState) => state.device.selectedDevice);
 
   return (
     <View style={styles.container}>
-      <TableComponent data={tableData} />
+      <TableComponent data={deviceList} />
     </View>
   );
 };

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import MapComponent from "../components/MapComponent";
 import { DeviceInfo } from "../types";
 import BottomSheetComponent from "../components/BottomSheetComponent";
@@ -9,6 +9,8 @@ import {
   BottomTabParamList,
   RootStackParamList,
 } from "../types/navigationParams";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 type MapViewProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -19,16 +21,27 @@ const MapView = () => {
   const [selectedDetails, setSelectedDetails] = useState<string[]>();
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
-  const { device } = route.params;
+  const { fromCoordRedirect } = route.params;
+  const selectedDevice = useSelector((state: RootState) => state.device.selectedDevice);
+  const singleDevice = fromCoordRedirect ? selectedDevice?.deviceInfo?.[1] : null;
 
+  useEffect(()=>{
+    console.log("selectedDevice", JSON.stringify(selectedDevice))
+  }
+    ,[])
   const handleMarkerPress = (device: DeviceInfo) => {
-    setSelectedDetails(device.details);
-    setBottomSheetVisible(true);
+    if (!fromCoordRedirect) {
+      setSelectedDetails(device.details);
+      setBottomSheetVisible(true);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <MapComponent deviceInfo={device.deviceInfo} onMarkerPress={handleMarkerPress} />
+      <MapComponent
+      deviceInfo={fromCoordRedirect ? (singleDevice ? [singleDevice] : []) : selectedDevice?.deviceInfo ?? []}
+      onMarkerPress={handleMarkerPress}
+      />
       <BottomSheetComponent
         visible={isBottomSheetVisible}
         details={selectedDetails?.length ? selectedDetails : []}

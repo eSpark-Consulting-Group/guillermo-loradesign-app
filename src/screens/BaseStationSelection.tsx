@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useDispatch, useSelector } from "react-redux";
 import DevicesList from "../components/DevicesList";
 import { MyText } from "../components/MyText";
 import {
@@ -14,6 +14,9 @@ import {
 
 import { Device } from "../types";
 import { deviceList } from "../constants";
+import { primaryColor, secondaryColor } from "../constants/Colors";
+import { selectDevice } from "../features/device/deviceSlice";
+import DatabaseService from "../database/services/DatabaseService";
 
 type BaseStationSelectionProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -22,89 +25,66 @@ type BaseStationSelectionProps = StackScreenProps<
 
 const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
-  const [deviceSelected, setDeviceSelected] = useState<Device>();
+  const [selectedDevice, setDeviceSelected] = useState<Device>();
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    const devices = DatabaseService.getAllDevices();
+    if (devices.length > 0) {
+      console.log("Stored Devices:", JSON.stringify(devices));
+    }
+  }, [dispatch]);
 
-  const handleDeviceSelect = (device: Device) => {
-    setDeviceSelected(device);
+  const handleDeviceSelect = async (device: Device) => {
+    dispatch(selectDevice(device));
+    DatabaseService.saveDevice(device);
+    navigation.navigate("BottomTabs", {
+      device: device,
+    });
   };
 
   return (
-    <LinearGradient
-    colors={["#ffffff", "#ffffff", "#ffffff"]} 
-    style={styles.background}
-    >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          <DevicesList
-            devices={deviceList}
-            selectedDevice={deviceSelected}
-            onDeviceSelect={handleDeviceSelect}
-          />
-        </View>
+    <SafeAreaView style={styles.container}>
+      <View style={{ flex: 1, marginTop: -20, marginBottom: 20 }}>
+        <DevicesList
+          devices={deviceList}
+          selectedDevice={selectedDevice}
+          onDeviceSelect={setDeviceSelected}
+        />
+      </View>
 
-        <TouchableOpacity
-          disabled={!deviceSelected}
-          onPress={() => {
-            if (deviceSelected) {
-              navigation.navigate("BottomTabs", {
-                device: deviceSelected,
-              });
-            }
-          }}
-          style={[
-            styles.buttonWrapper,
-            !deviceSelected ? styles.buttonDisabled : {},
-          ]}
+      <TouchableOpacity
+        disabled={!selectedDevice}
+        onPress={() => {
+          if (selectedDevice) {
+            handleDeviceSelect(selectedDevice);
+          }
+        }}
+        style={[
+          styles.buttonWrapper,
+          !selectedDevice ? styles.buttonDisabled : {},
+        ]}
+      >
+        <LinearGradient
+          colors={[primaryColor, secondaryColor]}
+          style={styles.selectButton}
         >
-          <LinearGradient
-            colors={["#3EADCF", "#2B879E"]}
-            style={styles.selectButton}
-          >
-            <MyText style={styles.buttonText}>Select</MyText>
-          </LinearGradient>
-        </TouchableOpacity>
-      </SafeAreaView>
-    </LinearGradient>
+          <MyText style={styles.buttonText}>Select</MyText>
+        </LinearGradient>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    justifyContent: "space-between",
     paddingHorizontal: 20,
+    paddingTop: 12,
     paddingBottom: 30,
+    backgroundColor: "#ffffff",
   },
-  content: {
-    marginTop: 10,
-  },
-  screenName: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    color: "#000",
-  },
-  header: {
-    marginTop: 40,
-    alignItems: "center",
-  },
-  screenTitle: {
-    fontSize: 26,
-    fontWeight: "700",
-    textAlign: "center",
-    color: "#fff",
-  },
-  subTitle: {
-    fontSize: 16,
-    fontWeight: "400",
-    textAlign: "center",
-    color: "#B0BEC5",
-    marginTop: 5,
-  },
+
   buttonWrapper: {
     borderRadius: 12,
     overflow: "hidden",
@@ -126,7 +106,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   buttonDisabled: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
 });
 
