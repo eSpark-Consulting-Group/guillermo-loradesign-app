@@ -15,7 +15,6 @@ import {
 import { Device } from "../types";
 import { deviceList } from "../constants";
 import { primaryColor, secondaryColor } from "../constants/Colors";
-import { RootState } from "../store";
 import { selectDevice } from "../features/device/deviceSlice";
 import DatabaseService from "../database/services/DatabaseService";
 
