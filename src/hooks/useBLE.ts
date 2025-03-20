@@ -45,15 +45,17 @@ export const useBLE = () => {
 
     const foundDevices = new Map(); // Track unique devices
 
-    bleManager.startDeviceScan([UART_SERVICE_UUID], null, (error, device) => {
+    bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.error("Scan error:", error);
         setIsScanning(false);
         return;
       }
+      // console.log(device?.name, device?.id, device?.serviceUUIDs);
 
       // Ensure the device has a name and advertises the UART service
-      if (device?.id && device?.name && !foundDevices.has(device.id)) {
+      if ((device?.id, device?.name)) {
+        console.log("UART device:", device.name, device.id);
         foundDevices.set(device.id, device);
         setScannedDevices(Array.from(foundDevices.values())); // Convert Map to array
         console.log("Found UART device:", device.name, device.id);
@@ -62,7 +64,7 @@ export const useBLE = () => {
 
     setTimeout(() => {
       stopScan();
-    }, 50000); // Stop scanning after 7s
+    }, 7000); // Stop scanning after 7s
   };
 
   const stopScan = () => {
@@ -158,12 +160,13 @@ export const useBLE = () => {
   };
 
   return {
-    isScanning,
-    isConnected,
-    geoData,
-    scannedDevices,
     startScan,
+    isScanning,
+    scannedDevices,
     connectToDevice,
+    isConnected,
+    connectedDevice,
+    geoData,
     disconnect,
   };
 };

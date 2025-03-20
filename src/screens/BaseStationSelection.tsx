@@ -30,19 +30,19 @@ const BaseStationSelection = () => {
   const dispatch = useDispatch();
   const {
     startScan,
-    isConnected,
-    disconnect,
     scannedDevices,
     isScanning,
     connectToDevice,
+    connectedDevice,
+    geoData,
   } = useBLE();
 
-  useEffect(() => {
-    const devices = DatabaseService.getAllDevices();
-    if (devices.length > 0) {
-      // console.log("Stored Devices:", JSON.stringify(devices));
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const devices = DatabaseService.getAllDevices();
+  //   if (devices.length > 0) {
+  //     // console.log("Stored Devices:", JSON.stringify(devices));
+  //   }
+  // }, [dispatch]);
 
   const initializeScan = async () => {
     await startScan(); // Auto start scanning when component mounts
@@ -55,16 +55,18 @@ const BaseStationSelection = () => {
   const handleDeviceSelect = async (device: Device) => {
     // dispatch(selectDevice(device));
     await connectToDevice(device);
-    // navigation.navigate("BottomTabs", { });
+    // navigation.navigate("BottomTabs", {
+    //   device: connectedDevice ?? undefined,
+    //   geoData: geoData ?? undefined,
+    // });
   };
 
   useEffect(() => {
-    console.log("isscanning:", isScanning);
+    console.log("isScanning:", isScanning);
   }, [isScanning]);
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Scan Button */}
       <TouchableOpacity
         onPress={initializeScan}
         style={[styles.scanButtonWrapper, isScanning && styles.buttonDisabled]}
