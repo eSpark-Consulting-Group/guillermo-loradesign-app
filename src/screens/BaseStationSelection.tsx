@@ -12,11 +12,10 @@ import {
   RootStackParamList,
 } from "../types/navigationParams";
 
-import { Device } from "../types";
-import { deviceList } from "../constants";
+import { Device } from "react-native-ble-plx";
 import { primaryColor, secondaryColor } from "../constants/Colors";
-import { selectDevice } from "../features/device/deviceSlice";
 import DatabaseService from "../database/services/DatabaseService";
+import { useBLE } from "../hooks/useBLE";
 
 type BaseStationSelectionProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -25,41 +24,75 @@ type BaseStationSelectionProps = StackScreenProps<
 
 const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
-  const [selectedDevice, setDeviceSelected] = useState<Device>();
+  // const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  
+  const {
+    startScan,
+    scannedDevices,
+    isScanning,
+    connectToDevice,
+    connectedDevice,
+    geoData,
+  } = useBLE();
+
+  // useEffect(() => {
+  //   const devices = DatabaseService.getAllDevices();
+  //   if (devices.length > 0) {
+  //     // console.log("Stored Devices:", JSON.stringify(devices));
+  //   }
+  // }, [dispatch]);
+
+  const initializeScan = async () => {
+    await startScan(); // Auto start scanning when component mounts
+  };
+
   useEffect(() => {
-    const devices = DatabaseService.getAllDevices();
-    if (devices.length > 0) {
-      console.log("Stored Devices:", JSON.stringify(devices));
-    }
-  }, [dispatch]);
+    initializeScan();
+  }, []);
 
   const handleDeviceSelect = async (device: Device) => {
-    dispatch(selectDevice(device));
-    DatabaseService.saveDevice(device);
-    navigation.navigate("BottomTabs", {
-      device: device,
-    });
+    // dispatch(selectDevice(device));
+    await connectToDevice(device);
+    // navigation.navigate("BottomTabs", {
+    //   device: connectedDevice ?? undefined,
+    //   geoData: geoData ?? undefined,
+    // });
   };
+
+  useEffect(() => {
+    console.log("isScanning:", isScanning);
+  }, [isScanning]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flex: 1, marginTop: -20, marginBottom: 20 }}>
+      <TouchableOpacity
+        onPress={initializeScan}
+        style={[styles.scanButtonWrapper, isScanning && styles.buttonDisabled]}
+        disabled={isScanning}
+      >
+        <LinearGradient
+          colors={[primaryColor, secondaryColor]}
+          style={styles.scanButton}
+        >
+          <MyText style={styles.scanButtonText}>
+            {isScanning ? "Scanning..." : "Scan"}
+          </MyText>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      <View style={{ flex: 1, marginBottom: 20 }}>
         <DevicesList
-          devices={deviceList}
+          devices={scannedDevices}
           selectedDevice={selectedDevice}
-          onDeviceSelect={setDeviceSelected}
+          onDeviceSelect={setSelectedDevice}
         />
       </View>
 
       <TouchableOpacity
-        disabled={!selectedDevice}
-        onPress={() => {
-          if (selectedDevice) {
-            handleDeviceSelect(selectedDevice);
-          }
-        }}
+        disabled={!selectedDevice || loading}
+        onPress={() => selectedDevice && handleDeviceSelect(selectedDevice)}
         style={[
           styles.buttonWrapper,
           !selectedDevice ? styles.buttonDisabled : {},
@@ -69,7 +102,9 @@ const BaseStationSelection = () => {
           colors={[primaryColor, secondaryColor]}
           style={styles.selectButton}
         >
-          <MyText style={styles.buttonText}>Select</MyText>
+          <MyText style={styles.buttonText}>
+            {loading ? "Connecting..." : "Select"}
+          </MyText>
         </LinearGradient>
       </TouchableOpacity>
     </SafeAreaView>
@@ -84,7 +119,27 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     backgroundColor: "#ffffff",
   },
-
+  scanButtonWrapper: {
+    marginBottom: 20,
+    borderRadius: 12,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  scanButton: {
+    paddingVertical: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+  },
+  scanButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#fff",
+  },
   buttonWrapper: {
     borderRadius: 12,
     overflow: "hidden",

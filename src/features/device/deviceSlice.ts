@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Device } from "../../types"; 
-import { storage } from "../../store/mmkv"
+import { Device } from "../../types";
+import { storage } from "../../store/mmkv";
 
 const DEVICE_STORAGE_KEY = "selectedDevice";
 
