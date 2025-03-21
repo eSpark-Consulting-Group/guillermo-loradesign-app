@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Device } from "../../types";
+import { BleDevice } from "../../types";
 import { storage } from "../../store/mmkv";
 
 const DEVICE_STORAGE_KEY = "selectedDevice";
 
-const getInitialDevice = (): Device | null => {
+const getInitialDevice = (): BleDevice | null => {
   const storedDevice = storage.getString(DEVICE_STORAGE_KEY);
   return storedDevice ? JSON.parse(storedDevice) : null;
 };
 
 interface DeviceState {
-  selectedDevice: Device | null;
+  selectedDevice: BleDevice | null;
 }
 
 const initialState: DeviceState = {
@@ -21,7 +21,7 @@ const deviceSlice = createSlice({
   name: "device",
   initialState,
   reducers: {
-    selectDevice: (state, action: PayloadAction<Device>) => {
+    selectDevice: (state, action: PayloadAction<BleDevice>) => {
       state.selectedDevice = action.payload;
       storage.set(DEVICE_STORAGE_KEY, JSON.stringify(action.payload));
     },

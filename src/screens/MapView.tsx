@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import MapComponent from "../components/MapComponent";
-import { DeviceInfo } from "../types";
+import { GeoData } from "../types";
 import BottomSheetComponent from "../components/BottomSheetComponent";
 import { useRoute } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -29,9 +29,9 @@ const MapView = () => {
     console.log("selectedDevice", JSON.stringify(selectedDevice))
   }
     ,[])
-  const handleMarkerPress = (device: DeviceInfo) => {
+  const handleMarkerPress = (device: GeoData) => {
     if (!fromCoordRedirect) {
-      setSelectedDetails(device.details);
+      // setSelectedDetails(device);
       setBottomSheetVisible(true);
     }
   };

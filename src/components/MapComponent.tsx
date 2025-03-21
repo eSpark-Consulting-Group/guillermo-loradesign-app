@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
-import { DeviceInfo } from "../types";
+import { GeoData } from "../types";
 
 export interface MapComponentProps {
-  deviceInfo: DeviceInfo[];
-  onMarkerPress: (deviceInfo: DeviceInfo) => void;
+  deviceInfo: GeoData[];
+  onMarkerPress: (deviceInfo: GeoData) => void;
 }
 
 const MapComponent = ({ deviceInfo, onMarkerPress }: MapComponentProps) => {
@@ -68,15 +68,14 @@ const MapComponent = ({ deviceInfo, onMarkerPress }: MapComponentProps) => {
         rotateEnabled={false}
         moveOnMarkerPress={false}
       >
-        {deviceInfo.map((deviceInfo) => (
+        {deviceInfo.map((device, index) => (
           <Marker
-            key={deviceInfo.id}
+            key={`${device.ids.join("-")}-${index}`}
             coordinate={{
-              latitude: deviceInfo.latitude,
-              longitude: deviceInfo.longitude,
+              latitude: deviceInfo[index].latitude,
+              longitude: deviceInfo[index].longitude,
             }}
-            title={deviceInfo.title}
-            onPress={() => onMarkerPress(deviceInfo)}
+            onPress={() => onMarkerPress(deviceInfo[index])}
           />
         ))}
       </MapView>
