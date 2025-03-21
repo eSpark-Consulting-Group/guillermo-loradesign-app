@@ -29,7 +29,7 @@ const TableComponent = ({ data }: TableComponentProps) => {
 
     const selectedDevice: BleDevice = {
       ...data,
-      deviceInfo: [item],
+      geoData: [item],
     };
 
     navigation.navigate("Map", { device: selectedDevice });
@@ -45,7 +45,7 @@ const TableComponent = ({ data }: TableComponentProps) => {
       </View>
 
       <FlatList
-        data={data?.deviceInfo}
+        data={data?.geoData}
         keyExtractor={(item) => item.ids.toString()}
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (

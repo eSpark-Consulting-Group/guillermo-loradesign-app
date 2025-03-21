@@ -1,7 +1,7 @@
 export interface BleDevice {
   id: string;
   name: string;
-  deviceInfo: GeoData[];
+  geoData: GeoData[];
 }
 
 export interface GeoData {

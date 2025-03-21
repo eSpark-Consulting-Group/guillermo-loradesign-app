@@ -16,7 +16,6 @@ import { Device } from "react-native-ble-plx";
 import { primaryColor, secondaryColor } from "../constants/Colors";
 import DatabaseService from "../database/services/DatabaseService";
 import { useBLE } from "../hooks/useBLE";
-import { selectDevice } from "../features/device/deviceSlice";
 
 type BaseStationSelectionProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -25,7 +24,6 @@ type BaseStationSelectionProps = StackScreenProps<
 
 const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
-  // const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -39,12 +37,12 @@ const BaseStationSelection = () => {
     geoData,
   } = useBLE();
 
-  // useEffect(() => {
-  //   const devices = DatabaseService.getAllDevices();
-  //   if (devices.length > 0) {
-  //     // console.log("Stored Devices:", JSON.stringify(devices));
-  //   }
-  // }, [dispatch]);
+  useEffect(() => {
+    const devices = DatabaseService.getAllDevices();
+    if (devices.length > 0) {
+      console.log("Stored Devices:", JSON.stringify(devices));
+    }
+  }, []);
 
   const initializeScan = async () => {
     await startScan(); // Auto start scanning when component mounts

@@ -57,7 +57,7 @@ const Settings = () => {
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-      await downloadDeviceInfoCSV(selectedDevice?.deviceInfo ?? []);
+      await downloadDeviceInfoCSV(selectedDevice, selectedDevice?.geoData ?? []);
       showToast("The CSV file has been saved successfully","success")
     } catch (error) {
       console.error("Error downloading CSV:", error);
@@ -67,7 +67,7 @@ const Settings = () => {
     }
   };
 
-  const handleStartDateChange = (event, date) => {
+  const handleStartDateChange = (event:any, date:any) => {
     setShowStartPicker(false);
     if (!date) return;
 
@@ -83,7 +83,7 @@ const Settings = () => {
     }, 300);
   };
 
-  const handleEndDateChange = (event, date) => {
+  const handleEndDateChange = (event:any, date:any) => {
     setShowEndPicker(false);
     if (!date) return;
 
@@ -97,14 +97,14 @@ const Settings = () => {
     filterDataByDateRange(startDate, date);
   };
 
-  const filterDataByDateRange = (start, end) => {
+  const filterDataByDateRange = (start:any, end:any) => {
     const startTime = new Date(start);
     startTime.setHours(0, 0, 0, 0);
     
     const endTime = new Date(end);
     endTime.setHours(23, 59, 59, 999);
     
-    const filtered = (selectedDevice?.deviceInfo ?? []).filter((item) => {
+    const filtered = (selectedDevice?.geoData ?? []).filter((item) => {
       if (!item) return false;
       
       const currentTimestamp = new Date();
@@ -141,7 +141,7 @@ const Settings = () => {
   
       const selectedDevice: BleDevice = {
         ...device,
-        deviceInfo: [item],
+        geoData: [item],
       };
   
       navigation.navigate("Map", { device: selectedDevice });
