@@ -1,13 +1,13 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import { MyText } from "./MyText";
-import { Device } from "../types";
+import { Device } from "react-native-ble-plx";
 import { RadioButton } from "react-native-paper";
 import { primaryColor } from "../constants/Colors";
 
 interface DevicesListProps {
   devices: Device[];
-  selectedDevice?: Device|null;
+  selectedDevice?: Device | null;
   onDeviceSelect?: (device: Device) => void;
 }
 
@@ -16,7 +16,6 @@ const DevicesList: React.FC<DevicesListProps> = ({
   selectedDevice,
   onDeviceSelect,
 }) => {
-
   const renderItem = ({ item: device }: { item: Device }) => (
     <TouchableOpacity
       key={device.id}
