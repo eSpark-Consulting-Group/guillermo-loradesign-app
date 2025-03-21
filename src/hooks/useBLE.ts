@@ -231,7 +231,7 @@ export const useBLE = () => {
 
       console.log("Reconnection successful!");
 
-      // Ensure the device is set before enabling notifications
+      // Ensure the device is set before enabling notifications!
       await enableNotifications(discovered);
     } catch (error) {
       console.error("Reconnection failed:", error);
