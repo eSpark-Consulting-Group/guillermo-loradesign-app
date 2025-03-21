@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import { View, StyleSheet } from "react-native";
 import MapComponent from "../components/MapComponent";
-import { DeviceInfo } from "../types";
+import { GeoData } from "../types";
 import BottomSheetComponent from "../components/BottomSheetComponent";
 import { useRoute } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -18,33 +18,31 @@ type MapViewProps = StackScreenProps<
 >;
 
 const MapView = () => {
-  const [selectedDetails, setSelectedDetails] = useState<string[]>();
+  const [selectedDetails, setSelectedDetails] = useState<GeoData>();
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
-  const { fromCoordRedirect } = route.params;
-  const selectedDevice = useSelector((state: RootState) => state.device.selectedDevice);
-  const singleDevice = fromCoordRedirect ? selectedDevice?.deviceInfo?.[1] : null;
+  const { device } = route.params;
+  const selectedDevice = useSelector(
+    (state: RootState) => state.device.selectedDevice
+  );
 
-  useEffect(()=>{
-    console.log("selectedDevice", JSON.stringify(selectedDevice))
-  }
-    ,[])
-  const handleMarkerPress = (device: DeviceInfo) => {
-    if (!fromCoordRedirect) {
-      setSelectedDetails(device.details);
+  useEffect(() => {
+    console.log("selectedDevice", JSON.stringify(selectedDevice));
+  }, []);
+  const handleMarkerPress = (geoData: GeoData) => {
+      setSelectedDetails(geoData);
       setBottomSheetVisible(true);
-    }
   };
 
   return (
     <View style={styles.container}>
       <MapComponent
-      deviceInfo={fromCoordRedirect ? (singleDevice ? [singleDevice] : []) : selectedDevice?.deviceInfo ?? []}
-      onMarkerPress={handleMarkerPress}
+        geoData={device?.geoData??[]}
+        onMarkerPress={handleMarkerPress}
       />
       <BottomSheetComponent
         visible={isBottomSheetVisible}
-        details={selectedDetails?.length ? selectedDetails : []}
+        geoData={selectedDetails||null}
         onClose={() => setBottomSheetVisible(false)}
       />
     </View>

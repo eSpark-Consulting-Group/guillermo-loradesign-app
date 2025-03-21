@@ -1,9 +1,7 @@
 import Realm from "realm";
-import { DeviceSchema, DeviceInfoSchema } from "../models/schemas";
+import { BleDeviceSchema, GeoDataSchema, TimestampSchema } from "../models/schemas";
 import RealmMigrationService from "../migration/RealmMigrationService";
-import { store } from "../../store";
-import { setDevices } from "../../features/device/deviceSlice";
-import { Device } from "@/src/types";
+import { BleDevice } from "@/src/types";
 
 class DatabaseService {
   private static instance: DatabaseService;
@@ -11,12 +9,10 @@ class DatabaseService {
 
   private constructor() {
     this.realm = new Realm({
-      schema: [DeviceSchema, DeviceInfoSchema],
+      schema: [BleDeviceSchema, GeoDataSchema, TimestampSchema],
       schemaVersion: 1,
       onMigration: RealmMigrationService.handleMigration,
     });
-
-    this.syncDevicesWithStorage();
   }
 
   public static getInstance(): DatabaseService {
@@ -26,86 +22,66 @@ class DatabaseService {
     return DatabaseService.instance;
   }
 
-  private syncDevicesWithStorage(): void {
-    const allDevices = this.getAllDevices();
-    store.dispatch(setDevices(allDevices));
-  }
-
-  saveDevice(device: Device): void {
+  saveDevice(device: BleDevice): void {
     try {
       this.realm.write(() => {
-        let existingDevice = this.realm.objectForPrimaryKey("Device", device.id);
-  
+        let existingDevice = this.realm.objectForPrimaryKey<BleDeviceSchema>("BleDevice", device.id);
+
         if (existingDevice) {
           existingDevice.name = device.name;
-          device.deviceInfo.forEach((info) => {
-            let existingInfo = this.realm.objectForPrimaryKey("DeviceInfo", info.id);
+          device.geoData.forEach((info) => {
+            let existingInfo = existingDevice.geoData.find((d) => d.ids[0] === info.ids[0]);
+            const newTimestamp = this.realm.create<InstanceType<typeof TimestampSchema>>("Timestamp", {
+              hour: info.timestamp.hour,
+              minute: info.timestamp.minute,
+              second: info.timestamp.second,
+            });
             if (existingInfo) {
+              existingInfo.ids = info.ids;
+              existingInfo.timestamp = newTimestamp;
               existingInfo.latitude = info.latitude;
               existingInfo.longitude = info.longitude;
-              existingInfo.title = info.title;
-              existingInfo.details = info.details;
             } else {
-              this.realm.create("DeviceInfo", info);
+              const newGeoData = this.realm.create<GeoDataSchema>("GeoData", {
+                ids: info.ids,
+                timestamp: newTimestamp,
+                latitude: info.latitude,
+                longitude: info.longitude,
+              });
+              existingDevice.geoData.push(newGeoData);
             }
           });
-  
-          existingDevice.deviceInfo = device.deviceInfo.map((info) =>
-            this.realm.objectForPrimaryKey("DeviceInfo", info.id)
-          );
         } else {
-          this.realm.create("Device", {
+          this.realm.create("BleDevice", {
             id: device.id,
             name: device.name,
-            deviceInfo: device.deviceInfo.map((info) => ({
-              id: info.id,
+            geoData: device.geoData.map((info) => ({
+              ids: info.ids,
+              timestamp: info.timestamp,
               latitude: info.latitude,
               longitude: info.longitude,
-              title: info.title,
-              details: info.details,
             })),
           });
         }
       });
-  
-      const updatedDevices = store.getState().device.allDevices.filter((d) => d.id !== device.id);
-      store.dispatch(setDevices([...updatedDevices, device]));
       console.log("Device saved successfully!");
     } catch (error) {
       console.error("Error saving to Realm:", error);
     }
   }
-  
-  getAllDevices(): Device[] {
-    const results = this.realm.objects<DeviceSchema>("Device");
+
+  getAllDevices(): BleDevice[] {
+    const results = this.realm.objects<BleDeviceSchema>("BleDevice");
     return results.map((device) => ({
       id: device.id,
       name: device.name,
-      deviceInfo: device.deviceInfo.map((info) => ({
-        id: info.id,
+      geoData: device.geoData.map((info) => ({
+        ids: info.ids,
         latitude: info.latitude,
         longitude: info.longitude,
-        title: info.title,
-        details: info.details,
+        timestamp: info.timestamp,
       })),
     }));
-  }
-
-  getDeviceById(id: number): Device | undefined {
-    const device = this.realm.objectForPrimaryKey<DeviceSchema>("Device", id);
-    return device
-      ? {
-          id: device.id,
-          name: device.name,
-          deviceInfo: device.deviceInfo.map((info) => ({
-            id: info.id,
-            latitude: info.latitude,
-            longitude: info.longitude,
-            title: info.title,
-            details: info.details,
-          })),
-        }
-      : undefined;
   }
 
   closeRealm(): void {

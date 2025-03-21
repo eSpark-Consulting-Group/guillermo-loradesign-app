@@ -11,14 +11,14 @@ import {
   BottomTabParamList,
   RootStackParamList,
 } from "../types/navigationParams";
-import { Device } from "../types";
+import { BleDevice } from "../types";
 import BottomTabBar from "../components/BottomTabBar";
 import { primaryColor } from "../constants/Colors";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
 
-const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
+const BottomTabs = ({ route }: { route: { params: { device: BleDevice } } }) => {
   const { device } = route.params;
 
   return (
@@ -32,7 +32,7 @@ const BottomTabs = ({ route }: { route: { params: { device: Device } } }) => {
       <Tab.Screen
         name="Map"
         component={MapView}
-        initialParams={{ device,fromCoordRedirect: false }}
+        initialParams={{ device }}
         options={{
           tabBarIcon: (props) => (
             <Ionicons name="map" size={props.size} color={props.color} />
