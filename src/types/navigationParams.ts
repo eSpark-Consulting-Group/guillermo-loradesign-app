@@ -1,4 +1,4 @@
-import { BleDevice } from ".";
+import { BleDevice, GeoData } from ".";
 // import { Device } from "react-native-ble-plx";
 
 export type RootStackParamList = {
@@ -8,8 +8,7 @@ export type RootStackParamList = {
 };
 
 export type BottomTabParamList = {
-  Map: { device?: BleDevice; fromCoordRedirect?: boolean };
-  // Map: { device?: Device; geoData?: GeoData; fromCoordRedirect?: boolean };
+  Map: { device?: BleDevice};
   Settings: { device?: BleDevice };
   Table: { device?: BleDevice };
 };

@@ -18,33 +18,31 @@ type MapViewProps = StackScreenProps<
 >;
 
 const MapView = () => {
-  const [selectedDetails, setSelectedDetails] = useState<string[]>();
+  const [selectedDetails, setSelectedDetails] = useState<GeoData>();
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
-  const { fromCoordRedirect } = route.params;
-  const selectedDevice = useSelector((state: RootState) => state.device.selectedDevice);
-  const singleDevice = fromCoordRedirect ? selectedDevice?.deviceInfo?.[1] : null;
+  const { device } = route.params;
+  const selectedDevice = useSelector(
+    (state: RootState) => state.device.selectedDevice
+  );
 
-  useEffect(()=>{
-    console.log("selectedDevice", JSON.stringify(selectedDevice))
-  }
-    ,[])
-  const handleMarkerPress = (device: GeoData) => {
-    if (!fromCoordRedirect) {
-      // setSelectedDetails(device);
+  useEffect(() => {
+    console.log("selectedDevice", JSON.stringify(selectedDevice));
+  }, []);
+  const handleMarkerPress = (geoData: GeoData) => {
+      setSelectedDetails(geoData);
       setBottomSheetVisible(true);
-    }
   };
 
   return (
     <View style={styles.container}>
       <MapComponent
-      deviceInfo={fromCoordRedirect ? (singleDevice ? [singleDevice] : []) : selectedDevice?.deviceInfo ?? []}
-      onMarkerPress={handleMarkerPress}
+        geoData={device?.geoData??[]}
+        onMarkerPress={handleMarkerPress}
       />
       <BottomSheetComponent
         visible={isBottomSheetVisible}
-        details={selectedDetails?.length ? selectedDetails : []}
+        geoData={selectedDetails||null}
         onClose={() => setBottomSheetVisible(false)}
       />
     </View>

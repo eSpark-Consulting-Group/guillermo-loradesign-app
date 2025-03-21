@@ -26,6 +26,7 @@ import {
   RootStackParamList,
 } from "../types/navigationParams";
 import { showToast } from "../utils/showToast";
+import { formatDate } from "../utils/DateFormat";
 import { useBLE } from "../hooks/useBLE";
 
 // Enable smooth Layout Animation for Android
@@ -45,13 +46,11 @@ const Settings = () => {
     (state: RootState) => state.device.selectedDevice
   );
   const [isDownloading, setIsDownloading] = useState(false);
-
-  // Date range state (replacing single date)
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-  const [datePickerStep, setDatePickerStep] = useState(0); // 0: none, 1: start, 2: end
+  const [datePickerStep, setDatePickerStep] = useState(0);
   const { reconnect, connectionStatus } = useBLE();
   const [isOnline, setIsOnline] = useState<boolean | null>(null);
 
@@ -69,8 +68,8 @@ const Settings = () => {
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-      await downloadDeviceInfoCSV(selectedDevice?.deviceInfo ?? []);
-      showToast("The CSV file has been saved successfully", "success");
+      await downloadDeviceInfoCSV(selectedDevice, selectedDevice?.geoData ?? []);
+      showToast("The CSV file has been saved successfully","success")
     } catch (error) {
       console.error("Error downloading CSV:", error);
       showToast("An error occurred while downloading the file", "error");
@@ -79,10 +78,7 @@ const Settings = () => {
     }
   };
 
-  const handleStartDateChange = (
-    event: DateTimePickerEvent,
-    date: Date | undefined
-  ) => {
+  const handleStartDateChange = (event:any, date:any) => {
     setShowStartPicker(false);
     if (!date) return;
 
@@ -98,10 +94,7 @@ const Settings = () => {
     }, 300);
   };
 
-  const handleEndDateChange = (
-    event: DateTimePickerEvent,
-    date: Date | undefined
-  ) => {
+  const handleEndDateChange = (event:any, date:any) => {
     setShowEndPicker(false);
     if (!date) return;
 
@@ -115,17 +108,14 @@ const Settings = () => {
     filterDataByDateRange(startDate, date);
   };
 
-  const filterDataByDateRange = (
-    start: string | number | Date,
-    end: string | number | Date
-  ) => {
+  const filterDataByDateRange = (start:any, end:any) => {
     const startTime = new Date(start);
     startTime.setHours(0, 0, 0, 0);
 
     const endTime = new Date(end);
     endTime.setHours(23, 59, 59, 999);
-
-    const filtered = (selectedDevice?.deviceInfo ?? []).filter((item) => {
+    
+    const filtered = (selectedDevice?.geoData ?? []).filter((item) => {
       if (!item) return false;
 
       const currentTimestamp = new Date();
@@ -156,21 +146,30 @@ const Settings = () => {
     setEndDate(new Date());
   };
 
-  const handlePress = (device: Device) => {
-    navigation.navigate("Map", { device, fromCoordRedirect: true });
-  };
+  
+    const handlePress = (device: BleDevice, item: GeoData) => {
+      if (!device) return;
+  
+      const selectedDevice: BleDevice = {
+        ...device,
+        geoData: [item],
+      };
+  
+      navigation.navigate("Map", { device: selectedDevice });
+    };
+  
 
   const renderItem = ({ item, index }: { item: GeoData; index: number }) => (
     <Pressable
       style={[styles.row, index % 2 === 0 ? styles.evenRow : styles.oddRow]}
-      onPress={() => selectedDevice && handlePress(selectedDevice)}
+      onPress={() => selectedDevice && handlePress(selectedDevice,item)}
     >
-      <MyText style={[styles.cell, { width: "20%" }]}>
-        {new Date().toLocaleDateString()}
-      </MyText>
-      <View style={[styles.deviceInfoContainer, { width: "55%" }]}>
+      <MyText style={[styles.cell, { width: "30%" }]}>
+      {formatDate(item.timestamp)}
+            </MyText>
+      <View style={[styles.deviceInfoContainer, { width: "65%" }]}>
         <Pressable
-          onPress={() => selectedDevice && handlePress(selectedDevice)}
+          onPress={() => selectedDevice && handlePress(selectedDevice,item)}
         >
           <MyText style={styles.deviceTitle}>
             {`${item.latitude}, ${item.longitude}`}
@@ -290,10 +289,10 @@ const Settings = () => {
         {filteredData.length > 0 && (
           <>
             <View style={styles.header}>
-              <MyText style={[styles.headerText, { width: "30%" }]}>
+              <MyText style={[styles.headerText, { width: "40%" }]}>
                 Date
               </MyText>
-              <MyText style={[styles.headerText, { width: "70%" }]}>
+              <MyText style={[styles.headerText, { width: "60%" }]}>
                 GNSS Location (Latitude, Longitude)
               </MyText>
             </View>

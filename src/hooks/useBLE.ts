@@ -5,7 +5,7 @@ import { Platform, PermissionsAndroid } from "react-native";
 import { GeoData, BleDevice } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import { selectDevice } from "../features/device/deviceSlice";
-import { RootState } from "../store";
+import DatabaseService from "../database/services/DatabaseService";
 
 const UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
 const TX_CHARACTERISTIC_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E";
@@ -110,7 +110,7 @@ export const useBLE = () => {
             const parsedData = parseGeolocationData(char.value);
             setGeoData(parsedData);
             setDeviceData((prev) => {
-              const exists = prev?.deviceInfo?.some(
+              const exists = prev?.geoData?.some(
                 (info) => JSON.stringify(info) === JSON.stringify(parsedData)
               );
 
@@ -121,14 +121,15 @@ export const useBLE = () => {
               const updatedDeviceData: BleDevice = {
                 id: prev?.id ?? device.id,
                 name: prev?.name ?? device.name ?? "",
-                deviceInfo: parsedData
-                  ? [...(prev?.deviceInfo || []), parsedData]
-                  : prev?.deviceInfo || [],
+                geoData: parsedData
+                  ? [...(prev?.geoData || []), parsedData]
+                  : prev?.geoData || [],
               };
+              DatabaseService.saveDevice(updatedDeviceData);
               dispatch(selectDevice(updatedDeviceData));
               return updatedDeviceData;
             });
-            console.log("Parsed Data:", parsedData);
+            // console.log("Parsed Data:", parsedData);
           }
         }
       );

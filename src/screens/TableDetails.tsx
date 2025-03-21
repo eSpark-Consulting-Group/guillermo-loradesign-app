@@ -4,7 +4,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 
 import TableComponent from "../components/TableComponent";
-import { deviceList } from "../constants";
 import {
   BottomTabParamList,
   RootStackParamList,
@@ -23,7 +22,7 @@ const TableDetails = () => {
 
   return (
     <View style={styles.container}>
-      <TableComponent data={deviceList} />
+      <TableComponent data={selectedDevice} />
     </View>
   );
 };
