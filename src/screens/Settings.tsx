@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
   UIManager,
-  Platform
+  Platform,
 } from "react-native";
 import { MyText } from "../components/MyText";
 import { Feather } from "@expo/vector-icons";
@@ -14,7 +14,9 @@ import { settingsOptions } from "../constants";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { downloadDeviceInfoCSV } from "../database/csvUtil";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import { BleDevice, GeoData } from "../types";
 import { FlatList, Pressable } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
@@ -24,6 +26,7 @@ import {
   RootStackParamList,
 } from "../types/navigationParams";
 import { showToast } from "../utils/showToast";
+import { useBLE } from "../hooks/useBLE";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -42,14 +45,24 @@ const Settings = () => {
     (state: RootState) => state.device.selectedDevice
   );
   const [isDownloading, setIsDownloading] = useState(false);
-  
+
   // Date range state (replacing single date)
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [datePickerStep, setDatePickerStep] = useState(0); // 0: none, 1: start, 2: end
-  
+  const { reconnect, connectionStatus } = useBLE();
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const fetchConnectionStatus = async () => {
+      const status = await connectionStatus();
+      setIsOnline(status);
+    };
+    fetchConnectionStatus();
+  }, [connectionStatus]);
+
   const [filteredData, setFilteredData] = useState<GeoData[]>([]);
   const navigation = useNavigation<SettingsScreenNavigationProp>();
 
@@ -57,16 +70,19 @@ const Settings = () => {
     setIsDownloading(true);
     try {
       await downloadDeviceInfoCSV(selectedDevice?.deviceInfo ?? []);
-      showToast("The CSV file has been saved successfully","success")
+      showToast("The CSV file has been saved successfully", "success");
     } catch (error) {
       console.error("Error downloading CSV:", error);
-      showToast("An error occurred while downloading the file","error")
+      showToast("An error occurred while downloading the file", "error");
     } finally {
       setIsDownloading(false);
     }
   };
 
-  const handleStartDateChange = (event, date) => {
+  const handleStartDateChange = (
+    event: DateTimePickerEvent,
+    date: Date | undefined
+  ) => {
     setShowStartPicker(false);
     if (!date) return;
 
@@ -75,14 +91,17 @@ const Settings = () => {
     }
 
     setStartDate(date);
-    
+
     setTimeout(() => {
       setShowEndPicker(true);
       setDatePickerStep(2);
     }, 300);
   };
 
-  const handleEndDateChange = (event, date) => {
+  const handleEndDateChange = (
+    event: DateTimePickerEvent,
+    date: Date | undefined
+  ) => {
     setShowEndPicker(false);
     if (!date) return;
 
@@ -92,34 +111,37 @@ const Settings = () => {
 
     setEndDate(date);
     setDatePickerStep(0);
-    
+
     filterDataByDateRange(startDate, date);
   };
 
-  const filterDataByDateRange = (start, end) => {
+  const filterDataByDateRange = (
+    start: string | number | Date,
+    end: string | number | Date
+  ) => {
     const startTime = new Date(start);
     startTime.setHours(0, 0, 0, 0);
-    
+
     const endTime = new Date(end);
     endTime.setHours(23, 59, 59, 999);
-    
+
     const filtered = (selectedDevice?.deviceInfo ?? []).filter((item) => {
       if (!item) return false;
-      
+
       const currentTimestamp = new Date();
       const itemYear = currentTimestamp.getFullYear();
       const itemMonth = currentTimestamp.getMonth();
       const itemDay = currentTimestamp.getDate();
-      
+
       const itemDate = new Date(itemYear, itemMonth, itemDay);
-      
+
       return itemDate >= startTime && itemDate <= endTime;
     });
-    
+
     setFilteredData(filtered);
 
     if (filtered.length === 0) {
-      showToast("No Data Found","error")
+      showToast("No Data Found", "error");
     }
   };
 
@@ -171,7 +193,12 @@ const Settings = () => {
                   ? handleDownload
                   : option.id === 3
                   ? handleDateRangeSelect
-                  : option.onPress
+                  : () => {
+                      if (!isOnline) {
+                        console.log("reconnect logic");
+                        reconnect();
+                      }
+                    }
               }
             >
               <View style={styles.optionContent}>
@@ -192,20 +219,25 @@ const Settings = () => {
                 )}
                 {option.id === 2 && (
                   <View style={styles.statusContainer}>
-                    <MyText style={styles.statusText}>Online</MyText>
+                    <MyText
+                      style={[
+                        styles.statusText,
+                        { color: isOnline ? "#28A745" : "red" },
+                      ]}
+                    >
+                      {isOnline ? "Online" : "Offline"}
+                    </MyText>
                     <Feather
                       name="check-circle"
                       size={18}
-                      color="#28A745"
+                      color={isOnline ? "#28A745" : "red"}
                       style={styles.statusIcon}
                     />
                   </View>
                 )}
 
                 {option.id === 3 && filteredData.length > 0 ? (
-                  <TouchableOpacity
-                    onPress={clearDateFilter}
-                  >
+                  <TouchableOpacity onPress={clearDateFilter}>
                     <Feather
                       name="x-circle"
                       size={22}
@@ -254,7 +286,7 @@ const Settings = () => {
             />
           </View>
         )}
-        
+
         {filteredData.length > 0 && (
           <>
             <View style={styles.header}>
