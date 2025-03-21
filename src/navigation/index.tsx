@@ -11,7 +11,7 @@ import {
   BottomTabParamList,
   RootStackParamList,
 } from "../types/navigationParams";
-import { Device } from "../types";
+import { BleDevice } from "../types";
 import BottomTabBar from "../components/BottomTabBar";
 import { primaryColor } from "../constants/Colors";
 
