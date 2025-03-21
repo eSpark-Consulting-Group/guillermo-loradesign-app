@@ -35,7 +35,7 @@ export class GeoDataSchema extends Realm.Object<GeoDataSchema> {
 export class BleDeviceSchema extends Realm.Object<BleDeviceSchema> {
   id!: string;
   name!: string;
-  deviceInfo!: GeoDataSchema[];
+  geoData!: GeoDataSchema[];
 
   static schema: Realm.ObjectSchema = {
     name: 'BleDevice',
@@ -43,7 +43,7 @@ export class BleDeviceSchema extends Realm.Object<BleDeviceSchema> {
     properties: {
       id: 'string',
       name: 'string',
-      deviceInfo: 'GeoData[]'
+      geoData: 'GeoData[]'
     }
   };
 }
