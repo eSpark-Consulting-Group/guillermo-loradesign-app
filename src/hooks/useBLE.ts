@@ -2,16 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { BleManager, Device } from "react-native-ble-plx";
 import { Buffer } from "buffer";
 import { Platform, PermissionsAndroid } from "react-native";
+import { GeoData, BleDevice } from "../types";
+import { useDispatch } from "react-redux";
+import { selectDevice } from "../features/device/deviceSlice";
 
 const UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
 const TX_CHARACTERISTIC_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E";
-
-export interface GeoData {
-  ids: number[];
-  timestamp: { hour: number; minute: number; second: number };
-  latitude: number;
-  longitude: number;
-}
 
 export const useBLE = () => {
   const bleManager = useRef(new BleManager()).current;
@@ -20,6 +16,8 @@ export const useBLE = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
+  const [deviceData, setDeviceData] = useState<BleDevice | null>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     return () => {
@@ -105,6 +103,25 @@ export const useBLE = () => {
           if (char?.value) {
             const parsedData = parseGeolocationData(char.value);
             setGeoData(parsedData);
+            setDeviceData((prev) => {
+              const exists = prev?.deviceInfo?.some(
+                (info) => JSON.stringify(info) === JSON.stringify(parsedData)
+              );
+            
+              if (exists) {
+                return prev;
+              }
+            
+              const updatedDeviceData: BleDevice = {
+                id: prev?.id ?? device.id,
+                name: prev?.name ?? device.name ?? "",
+                deviceInfo: parsedData
+                ? [...(prev?.deviceInfo || []), parsedData]
+                : prev?.deviceInfo || [],
+                            };
+              dispatch(selectDevice(updatedDeviceData));
+              return updatedDeviceData;
+            });
             console.log("Parsed Data:", parsedData);
           }
         }
@@ -166,6 +183,7 @@ export const useBLE = () => {
     connectToDevice,
     isConnected,
     connectedDevice,
+    deviceData,
     geoData,
     disconnect,
   };
