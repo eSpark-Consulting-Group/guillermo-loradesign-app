@@ -1,15 +1,15 @@
-import { DeviceInfo } from "@/src/types";
+import { GeoData } from "@/src/types";
 import { showToast } from "@/src/utils/showToast";
 import { Platform, PermissionsAndroid } from "react-native";
 import RNFS from "react-native-fs";
 
-export const downloadDeviceInfoCSV = async (deviceInfo: DeviceInfo[]) => {
+export const downloadDeviceInfoCSV = async (deviceInfo: GeoData[]) => {
   if (!deviceInfo || deviceInfo.length === 0) return;
 
   const csvHeaders = ["Device ID", "GNSS Location (Latitude, Longitude)", "Date"];
   const currentDate = new Date().toISOString();
   const csvRows = deviceInfo.map((row) => [
-    row.id,
+    row.ids[0],
     `${row.latitude}, ${row.longitude}`,
     currentDate,
   ]);

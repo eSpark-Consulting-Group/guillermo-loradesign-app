@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { downloadDeviceInfoCSV } from "../database/csvUtil";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Device, DeviceInfo } from "../types";
+import { BleDevice, GeoData } from "../types";
 import { FlatList, Pressable } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
@@ -50,7 +50,7 @@ const Settings = () => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [datePickerStep, setDatePickerStep] = useState(0); // 0: none, 1: start, 2: end
   
-  const [filteredData, setFilteredData] = useState<DeviceInfo[]>([]);
+  const [filteredData, setFilteredData] = useState<GeoData[]>([]);
   const navigation = useNavigation<SettingsScreenNavigationProp>();
 
   const handleDownload = async () => {
@@ -106,8 +106,6 @@ const Settings = () => {
     const filtered = (selectedDevice?.deviceInfo ?? []).filter((item) => {
       if (!item) return false;
       
-      // Use current timestamp to create a date for comparison
-      // In a real implementation, you would use item.timestamp
       const currentTimestamp = new Date();
       const itemYear = currentTimestamp.getFullYear();
       const itemMonth = currentTimestamp.getMonth();
@@ -126,7 +124,6 @@ const Settings = () => {
   };
 
   const handleDateRangeSelect = () => {
-    // Start the date range selection process
     setShowStartPicker(true);
     setDatePickerStep(1);
   };
@@ -141,7 +138,7 @@ const Settings = () => {
     navigation.navigate("Map", { device, fromCoordRedirect: true });
   };
 
-  const renderItem = ({ item, index }: { item: DeviceInfo; index: number }) => (
+  const renderItem = ({ item, index }: { item: GeoData; index: number }) => (
     <Pressable
       style={[styles.row, index % 2 === 0 ? styles.evenRow : styles.oddRow]}
       onPress={() => selectedDevice && handlePress(selectedDevice)}
@@ -271,7 +268,7 @@ const Settings = () => {
 
             <FlatList
               data={filteredData}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item) => item.ids[0].toString()}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
             />

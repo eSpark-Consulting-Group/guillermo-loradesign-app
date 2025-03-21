@@ -4,7 +4,7 @@ import { MyText } from "./MyText";
 import { primaryColor } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable } from "react-native";
-import { Device } from "../types";
+import { BleDevice } from "../types";
 import { StackScreenProps } from "@react-navigation/stack";
 import {
   RootStackParamList,
@@ -12,7 +12,7 @@ import {
 } from "../types/navigationParams";
 
 interface TableComponentProps {
-  data: Device[];
+  data: BleDevice[];
 }
 
 type TableDetailsProps = StackScreenProps<
@@ -23,7 +23,7 @@ type TableDetailsProps = StackScreenProps<
 const TableComponent = ({ data }: TableComponentProps) => {
   const navigation = useNavigation<TableDetailsProps["navigation"]>();
 
-  const handlePress = (device: Device) => {
+  const handlePress = (device: BleDevice) => {
     navigation.navigate("Map", { device, fromCoordRedirect: true });
   };
 

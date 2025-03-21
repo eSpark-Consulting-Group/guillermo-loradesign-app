@@ -16,6 +16,7 @@ import { Device } from "react-native-ble-plx";
 import { primaryColor, secondaryColor } from "../constants/Colors";
 import DatabaseService from "../database/services/DatabaseService";
 import { useBLE } from "../hooks/useBLE";
+import { selectDevice } from "../features/device/deviceSlice";
 
 type BaseStationSelectionProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -34,6 +35,7 @@ const BaseStationSelection = () => {
     isScanning,
     connectToDevice,
     connectedDevice,
+    deviceData,
     geoData,
   } = useBLE();
 
@@ -53,17 +55,21 @@ const BaseStationSelection = () => {
   }, []);
 
   const handleDeviceSelect = async (device: Device) => {
-    // dispatch(selectDevice(device));
     await connectToDevice(device);
-    // navigation.navigate("BottomTabs", {
-    //   device: connectedDevice ?? undefined,
-    //   geoData: geoData ?? undefined,
-    // });
   };
 
   useEffect(() => {
     console.log("isScanning:", isScanning);
   }, [isScanning]);
+
+  useEffect(() => {
+    if (connectedDevice && deviceData) {
+      dispatch(selectDevice(deviceData));
+      navigation.navigate("BottomTabs", {
+        device: deviceData,
+      });
+    }
+  }, [connectedDevice, deviceData]);
 
   return (
     <SafeAreaView style={styles.container}>
