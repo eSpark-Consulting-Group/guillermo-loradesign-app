@@ -64,7 +64,6 @@ const BaseStationSelection = () => {
 
   useEffect(() => {
     if (connectedDevice && deviceData) {
-      dispatch(selectDevice(deviceData));
       navigation.navigate("BottomTabs", {
         device: deviceData,
       });

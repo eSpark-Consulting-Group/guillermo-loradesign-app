@@ -24,6 +24,7 @@ import {
   RootStackParamList,
 } from "../types/navigationParams";
 import { showToast } from "../utils/showToast";
+import { formatDate } from "../utils/DateFormat";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -134,21 +135,30 @@ const Settings = () => {
     setEndDate(new Date());
   };
 
-  const handlePress = (device: Device) => {
-    navigation.navigate("Map", { device, fromCoordRedirect: true });
-  };
+  
+    const handlePress = (device: BleDevice, item: GeoData) => {
+      if (!device) return;
+  
+      const selectedDevice: BleDevice = {
+        ...device,
+        deviceInfo: [item],
+      };
+  
+      navigation.navigate("Map", { device: selectedDevice });
+    };
+  
 
   const renderItem = ({ item, index }: { item: GeoData; index: number }) => (
     <Pressable
       style={[styles.row, index % 2 === 0 ? styles.evenRow : styles.oddRow]}
-      onPress={() => selectedDevice && handlePress(selectedDevice)}
+      onPress={() => selectedDevice && handlePress(selectedDevice,item)}
     >
-      <MyText style={[styles.cell, { width: "20%" }]}>
-        {new Date().toLocaleDateString()}
-      </MyText>
-      <View style={[styles.deviceInfoContainer, { width: "55%" }]}>
+      <MyText style={[styles.cell, { width: "30%" }]}>
+      {formatDate(item.timestamp)}
+            </MyText>
+      <View style={[styles.deviceInfoContainer, { width: "65%" }]}>
         <Pressable
-          onPress={() => selectedDevice && handlePress(selectedDevice)}
+          onPress={() => selectedDevice && handlePress(selectedDevice,item)}
         >
           <MyText style={styles.deviceTitle}>
             {`${item.latitude}, ${item.longitude}`}
@@ -258,10 +268,10 @@ const Settings = () => {
         {filteredData.length > 0 && (
           <>
             <View style={styles.header}>
-              <MyText style={[styles.headerText, { width: "30%" }]}>
+              <MyText style={[styles.headerText, { width: "40%" }]}>
                 Date
               </MyText>
-              <MyText style={[styles.headerText, { width: "70%" }]}>
+              <MyText style={[styles.headerText, { width: "60%" }]}>
                 GNSS Location (Latitude, Longitude)
               </MyText>
             </View>

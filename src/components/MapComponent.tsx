@@ -70,7 +70,7 @@ const MapComponent = ({ deviceInfo, onMarkerPress }: MapComponentProps) => {
       >
         {deviceInfo.map((device, index) => (
           <Marker
-            key={`${device.ids.join("-")}-${index}`}
+            key={`${device.ids.join("-")}-${index}`} // Unique key with index fallback
             coordinate={{
               latitude: deviceInfo[index].latitude,
               longitude: deviceInfo[index].longitude,

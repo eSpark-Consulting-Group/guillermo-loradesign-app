@@ -23,7 +23,7 @@ const TableDetails = () => {
 
   return (
     <View style={styles.container}>
-      <TableComponent data={deviceList} />
+      <TableComponent data={selectedDevice} />
     </View>
   );
 };

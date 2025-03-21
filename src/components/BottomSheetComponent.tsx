@@ -1,40 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   Modal,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
 } from "react-native";
+import { GeoData } from "../types";
+import { formatDate } from "../utils/DateFormat"; // Ensure this function is available
 
 interface BottomSheetProps {
   visible: boolean;
-  details: string[];
+  geoData: GeoData | null;
   onClose: () => void;
 }
 
 const BottomSheetComponent = ({
   visible,
-  details,
+  geoData,
   onClose,
 }: BottomSheetProps) => {
-  const [localDetails, setLocalDetails] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (details && details.length > 0) {
-      console.log("Setting local details:", JSON.stringify(details));
-      setLocalDetails([...details]);
-    }
-  }, [details]);
-
-  if (!visible) return null;
-
-  const renderItem = ({ item, index }: { item: string; index: number }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemText}>• {item}</Text>
-    </View>
-  );
+  if (!visible || !geoData) return null;
 
   return (
     <Modal
@@ -51,17 +37,14 @@ const BottomSheetComponent = ({
 
           <Text style={styles.title}>Device Info</Text>
 
-          {localDetails.length > 0 ? (
-            <FlatList
-              data={localDetails}
-              renderItem={renderItem}
-              keyExtractor={(_, index) => index.toString()}
-              style={styles.flatList}
-              contentContainerStyle={styles.flatListContent}
-            />
-          ) : (
-            <Text style={styles.noData}>No details available</Text>
-          )}
+          <View style={styles.itemContainer}>
+            <Text style={styles.itemText}>Latitude: {geoData.latitude}</Text>
+            <Text style={styles.itemText}>Longitude: {geoData.longitude}</Text>
+            <Text style={styles.itemText}>
+              Timestamp: {formatDate(geoData.timestamp)}
+            </Text>
+          </View>
+
         </View>
       </View>
     </Modal>
@@ -98,12 +81,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 15,
   },
-  flatList: {
-    maxHeight: 300,
-  },
-  flatListContent: {
-    paddingBottom: 20,
-  },
   itemContainer: {
     paddingVertical: 10,
     borderBottomWidth: 1,
@@ -111,12 +88,6 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-  },
-  noData: {
-    fontSize: 16,
-    fontStyle: "italic",
-    textAlign: "center",
-    marginTop: 20,
   },
 });
 
