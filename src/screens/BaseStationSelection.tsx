@@ -16,6 +16,7 @@ import { Device } from "react-native-ble-plx";
 import { primaryColor, secondaryColor } from "../constants/Colors";
 import DatabaseService from "../database/services/DatabaseService";
 import { useBLE } from "../hooks/useBLE";
+import { selectDevice } from "../features/device/deviceSlice";
 
 type BaseStationSelectionProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -34,7 +35,6 @@ const BaseStationSelection = () => {
     connectToDevice,
     connectedDevice,
     deviceData,
-    geoData,
   } = useBLE();
 
   useEffect(() => {
@@ -62,6 +62,7 @@ const BaseStationSelection = () => {
 
   useEffect(() => {
     if (connectedDevice && deviceData) {
+      dispatch(selectDevice(deviceData));
       navigation.navigate("BottomTabs", {
         device: deviceData,
       });
