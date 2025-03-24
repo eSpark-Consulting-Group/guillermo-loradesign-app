@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, InteractionManager } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { GeoData } from "../types";
 
@@ -30,18 +30,19 @@ const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
     };
   };
 
-  useEffect(() => {
-    console.log("Device Info:", JSON.stringify(geoData));
-    if (!mapRef.current || geoData.length === 0) return;
+useEffect(() => {
+  console.log("Device Info:", JSON.stringify(geoData));
+  if (!mapRef.current || geoData.length === 0) return;
+  InteractionManager.runAfterInteractions(() => {
     if (geoData.length === 1) {
-      mapRef.current.animateToRegion({
+      mapRef?.current?.animateToRegion({
         latitude: geoData[0].latitude,
         longitude: geoData[0].longitude,
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
       });
     } else {
-      mapRef.current.fitToCoordinates(
+      mapRef?.current?.fitToCoordinates(
         geoData.map((device) => ({
           latitude: device.latitude,
           longitude: device.longitude,
@@ -52,7 +53,8 @@ const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
         }
       );
     }
-  }, [geoData]);
+  });
+}, [geoData]);
 
   return (
     <View style={styles.container}>
