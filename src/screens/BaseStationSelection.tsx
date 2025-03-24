@@ -24,7 +24,6 @@ type BaseStationSelectionProps = StackScreenProps<
 
 const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
-  // const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -34,15 +33,16 @@ const BaseStationSelection = () => {
     isScanning,
     connectToDevice,
     connectedDevice,
+    deviceData,
     geoData,
   } = useBLE();
 
-  // useEffect(() => {
-  //   const devices = DatabaseService.getAllDevices();
-  //   if (devices.length > 0) {
-  //     // console.log("Stored Devices:", JSON.stringify(devices));
-  //   }
-  // }, [dispatch]);
+  useEffect(() => {
+    const devices = DatabaseService.getAllDevices();
+    if (devices.length > 0) {
+      console.log("Stored Devices:", JSON.stringify(devices));
+    }
+  }, []);
 
   const initializeScan = async () => {
     await startScan(); // Auto start scanning when component mounts
@@ -53,17 +53,20 @@ const BaseStationSelection = () => {
   }, []);
 
   const handleDeviceSelect = async (device: Device) => {
-    // dispatch(selectDevice(device));
     await connectToDevice(device);
-    // navigation.navigate("BottomTabs", {
-    //   device: connectedDevice ?? undefined,
-    //   geoData: geoData ?? undefined,
-    // });
   };
 
   useEffect(() => {
     console.log("isScanning:", isScanning);
   }, [isScanning]);
+
+  useEffect(() => {
+    if (connectedDevice && deviceData) {
+      navigation.navigate("BottomTabs", {
+        device: deviceData,
+      });
+    }
+  }, [connectedDevice, deviceData]);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,22 +1,22 @@
-import { DeviceInfo } from "@/src/types";
+import { GeoData,BleDevice } from "@/src/types";
+import { formatDate } from "@/src/utils/DateFormat";
 import { showToast } from "@/src/utils/showToast";
 import { Platform, PermissionsAndroid } from "react-native";
 import RNFS from "react-native-fs";
 
-export const downloadDeviceInfoCSV = async (deviceInfo: DeviceInfo[]) => {
-  if (!deviceInfo || deviceInfo.length === 0) return;
+export const downloadDeviceInfoCSV = async (selectedDevice:BleDevice|null,geoData: GeoData[]) => {
+  if (!selectedDevice ||!geoData || geoData.length === 0) return;
 
-  const csvHeaders = ["Device ID", "GNSS Location (Latitude, Longitude)", "Date"];
-  const currentDate = new Date().toISOString();
-  const csvRows = deviceInfo.map((row) => [
-    row.id,
-    `${row.latitude}, ${row.longitude}`,
-    currentDate,
+  const csvHeaders = ["Device ID", "GNSS Location (Latitude/ Longitude)", "Date"];
+  const csvRows = geoData.map((row) => [
+    selectedDevice.id,
+    `${row.latitude}/ ${row.longitude}`,
+    formatDate(row.timestamp)
   ]);
   const csvContent = [csvHeaders, ...csvRows].map((row) => row.join(",")).join("\n");
 
   const randomNum = Math.floor(1000 + Math.random() * 9000);
-  const fileName = `device_info_${randomNum}.csv`;
+  const fileName = `device_data_${randomNum}.csv`;
   let downloadPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
 
   if (Platform.OS === "android") {

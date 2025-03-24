@@ -1,37 +1,49 @@
-import Realm from "realm";
+import Realm from 'realm';
 
-export class DeviceInfoSchema extends Realm.Object<DeviceInfoSchema> {
-  id!: number;
-  latitude!: number;
-  longitude!: number;
-  title!: string;
-  details!: string[];
+export class TimestampSchema extends Realm.Object<TimestampSchema> {
+  hour!: number;
+  minute!: number;
+  second!: number;
 
-  static schema = {
-    name: "DeviceInfo",
-    primaryKey: "id",
+  static schema: Realm.ObjectSchema = {
+    name: 'Timestamp',
     properties: {
-      id: "int",
-      latitude: "double",
-      longitude: "double",
-      title: "string",
-      details: "string[]",
-    },
+      hour: 'int',
+      minute: 'int',
+      second: 'int'
+    }
   };
 }
 
-export class DeviceSchema extends Realm.Object<DeviceSchema> {
-  id!: number;
-  name!: string;
-  deviceInfo!: Realm.List<DeviceInfoSchema>;
+export class GeoDataSchema extends Realm.Object<GeoDataSchema> {
+  ids!: number[];
+  timestamp!: TimestampSchema;
+  latitude!: number;
+  longitude!: number;
 
-  static schema = {
-    name: "Device",
-    primaryKey: "id",
+  static schema: Realm.ObjectSchema = {
+    name: 'GeoData',
     properties: {
-      id: "int",
-      name: "string",
-      deviceInfo: "DeviceInfo[]",
-    },
+      ids: 'int[]',
+      timestamp: 'Timestamp',
+      latitude: 'double',
+      longitude: 'double'
+    }
+  };
+}
+
+export class BleDeviceSchema extends Realm.Object<BleDeviceSchema> {
+  id!: string;
+  name!: string;
+  geoData!: GeoDataSchema[];
+
+  static schema: Realm.ObjectSchema = {
+    name: 'BleDevice',
+    primaryKey: 'id',
+    properties: {
+      id: 'string',
+      name: 'string',
+      geoData: 'GeoData[]'
+    }
   };
 }

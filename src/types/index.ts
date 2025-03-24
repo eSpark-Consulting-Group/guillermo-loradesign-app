@@ -1,13 +1,18 @@
-export interface Device {
-  id: number;
+export interface BleDevice {
+  id: string;
   name: string;
-  deviceInfo: DeviceInfo[];
+  geoData: GeoData[];
 }
 
-export interface DeviceInfo {
-  id: number;
+export interface GeoData {
+  ids: number[];
+  timestamp: Timestamp;
   latitude: number;
   longitude: number;
-  title: string;
-  details: string[];
+}
+
+export interface Timestamp {
+  hour: number;
+  minute: number;
+  second: number;
 }

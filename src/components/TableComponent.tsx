@@ -4,15 +4,16 @@ import { MyText } from "./MyText";
 import { primaryColor } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable } from "react-native";
-import { Device } from "../types";
+import { BleDevice, GeoData, Timestamp } from "../types";
 import { StackScreenProps } from "@react-navigation/stack";
+import { formatDate } from "../utils/DateFormat";
 import {
   RootStackParamList,
   BottomTabParamList,
 } from "../types/navigationParams";
 
 interface TableComponentProps {
-  data: Device[];
+  data: BleDevice | null;
 }
 
 type TableDetailsProps = StackScreenProps<
@@ -23,23 +24,29 @@ type TableDetailsProps = StackScreenProps<
 const TableComponent = ({ data }: TableComponentProps) => {
   const navigation = useNavigation<TableDetailsProps["navigation"]>();
 
-  const handlePress = (device: Device) => {
-    navigation.navigate("Map", { device, fromCoordRedirect: true });
+  const handlePress = (item: GeoData) => {
+    if (!data) return;
+
+    const selectedDevice: BleDevice = {
+      ...data,
+      geoData: [item],
+    };
+
+    navigation.navigate("Map", { device: selectedDevice });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <MyText style={[styles.headerText, { width: "20%" }]}>Device ID</MyText>
         <MyText style={[styles.headerText, { width: "30%" }]}>Date</MyText>
-        <MyText style={[styles.headerText, { width: "50%" }]}>
+        <MyText style={[styles.headerText, { width: "70%" }]}>
           GNSS Location (Latitude,Longitude)
         </MyText>
       </View>
 
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id.toString()}
+        data={data?.geoData}
+        keyExtractor={(item) => item.ids.toString()}
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <Pressable
@@ -49,18 +56,14 @@ const TableComponent = ({ data }: TableComponentProps) => {
             ]}
             onPress={() => handlePress(item)}
           >
-            <MyText style={[styles.cell, { width: "20%" }]}>{item.id}</MyText>
             <MyText style={[styles.cell, { width: "30%" }]}>
-              {"3/18/2025"}
+              {formatDate(item.timestamp)}
             </MyText>
-            <View style={[styles.deviceInfoContainer, { width: "50%" }]}>
-              <Pressable
-                key={item.deviceInfo[1].id}
-                onPress={() => handlePress(item)}
-              >
+            <View style={[styles.deviceInfoContainer, { width: "70%" }]}>
+              <Pressable key={item.ids[0]} onPress={() => handlePress(item)}>
                 <MyText style={styles.deviceTitle}>
                   {" "}
-                  {`${item.deviceInfo[1].latitude}, ${item.deviceInfo[1].longitude}`}
+                  {`${item.latitude}, ${item.longitude}`}
                 </MyText>
               </Pressable>
             </View>
