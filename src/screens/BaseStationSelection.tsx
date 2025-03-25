@@ -16,6 +16,8 @@ import { Device } from "react-native-ble-plx";
 import { primaryColor, secondaryColor } from "../constants/Colors";
 import DatabaseService from "../database/services/DatabaseService";
 import { useBLE } from "../hooks/useBLE";
+import { selectDevice } from "../features/device/deviceSlice";
+import { ActivityIndicator } from "react-native-paper";
 
 type BaseStationSelectionProps = StackScreenProps<
   RootStackParamList & BottomTabParamList,
@@ -25,7 +27,7 @@ type BaseStationSelectionProps = StackScreenProps<
 const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const {
     startScan,
@@ -34,7 +36,7 @@ const BaseStationSelection = () => {
     connectToDevice,
     connectedDevice,
     deviceData,
-    geoData,
+    reconnect,
   } = useBLE();
 
   useEffect(() => {
@@ -45,7 +47,14 @@ const BaseStationSelection = () => {
   }, []);
 
   const initializeScan = async () => {
-    await startScan(); // Auto start scanning when component mounts
+    setLoading(true); // Start loader
+    try {
+      await reconnect();
+      await startScan(); // Auto start scanning when component mounts
+      setLoading(false);
+    } finally {
+      setLoading(false); // Stop loader
+    }
   };
 
   useEffect(() => {
@@ -62,6 +71,7 @@ const BaseStationSelection = () => {
 
   useEffect(() => {
     if (connectedDevice && deviceData) {
+      dispatch(selectDevice(deviceData));
       navigation.navigate("BottomTabs", {
         device: deviceData,
       });
@@ -70,46 +80,57 @@ const BaseStationSelection = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        onPress={initializeScan}
-        style={[styles.scanButtonWrapper, isScanning && styles.buttonDisabled]}
-        disabled={isScanning}
-      >
-        <LinearGradient
-          colors={[primaryColor, secondaryColor]}
-          style={styles.scanButton}
-        >
-          <MyText style={styles.scanButtonText}>
-            {isScanning ? "Scanning..." : "Scan"}
-          </MyText>
-        </LinearGradient>
-      </TouchableOpacity>
+      {loading ? (
+        <View style={{ width: "100%", height: "100%" }}>
+          <ActivityIndicator size="large" color={primaryColor} />
+        </View>
+      ) : (
+        <>
+          <TouchableOpacity
+            onPress={initializeScan}
+            style={[
+              styles.scanButtonWrapper,
+              isScanning && styles.buttonDisabled,
+            ]}
+            disabled={isScanning}
+          >
+            <LinearGradient
+              colors={[primaryColor, secondaryColor]}
+              style={styles.scanButton}
+            >
+              <MyText style={styles.scanButtonText}>
+                {isScanning ? "Scanning..." : "Scan"}
+              </MyText>
+            </LinearGradient>
+          </TouchableOpacity>
 
-      <View style={{ flex: 1, marginBottom: 20 }}>
-        <DevicesList
-          devices={scannedDevices}
-          selectedDevice={selectedDevice}
-          onDeviceSelect={setSelectedDevice}
-        />
-      </View>
+          <View style={{ flex: 1, marginBottom: 20 }}>
+            <DevicesList
+              devices={scannedDevices}
+              selectedDevice={selectedDevice}
+              onDeviceSelect={setSelectedDevice}
+            />
+          </View>
 
-      <TouchableOpacity
-        disabled={!selectedDevice || loading}
-        onPress={() => selectedDevice && handleDeviceSelect(selectedDevice)}
-        style={[
-          styles.buttonWrapper,
-          !selectedDevice ? styles.buttonDisabled : {},
-        ]}
-      >
-        <LinearGradient
-          colors={[primaryColor, secondaryColor]}
-          style={styles.selectButton}
-        >
-          <MyText style={styles.buttonText}>
-            {loading ? "Connecting..." : "Select"}
-          </MyText>
-        </LinearGradient>
-      </TouchableOpacity>
+          <TouchableOpacity
+            disabled={!selectedDevice || loading}
+            onPress={() => selectedDevice && handleDeviceSelect(selectedDevice)}
+            style={[
+              styles.buttonWrapper,
+              !selectedDevice ? styles.buttonDisabled : {},
+            ]}
+          >
+            <LinearGradient
+              colors={[primaryColor, secondaryColor]}
+              style={styles.selectButton}
+            >
+              <MyText style={styles.buttonText}>
+                {loading ? "Connecting..." : "Select"}
+              </MyText>
+            </LinearGradient>
+          </TouchableOpacity>
+        </>
+      )}
     </SafeAreaView>
   );
 };
