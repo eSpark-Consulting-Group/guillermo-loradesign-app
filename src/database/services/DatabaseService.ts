@@ -30,18 +30,21 @@ class DatabaseService {
         if (existingDevice) {
           existingDevice.name = device.name;
           device.geoData.forEach((info) => {
-            let existingInfo = existingDevice.geoData.find((d) => d.ids[0] === info.ids[0]);
-            const newTimestamp = this.realm.create<InstanceType<typeof TimestampSchema>>("Timestamp", {
-              hour: info.timestamp.hour,
-              minute: info.timestamp.minute,
-              second: info.timestamp.second,
-            });
-            if (existingInfo) {
-              existingInfo.ids = info.ids;
-              existingInfo.timestamp = newTimestamp;
-              existingInfo.latitude = info.latitude;
-              existingInfo.longitude = info.longitude;
-            } else {
+            let existingInfo = existingDevice.geoData.find(
+              (d) =>
+                d.timestamp.hour === info.timestamp.hour &&
+                d.timestamp.minute === info.timestamp.minute &&
+                d.timestamp.second === info.timestamp.second &&
+                d.latitude === info.latitude &&
+                d.longitude === info.longitude
+            );
+            if (!existingInfo) {
+              console.log("existingInfo",existingInfo)
+              const newTimestamp = this.realm.create<InstanceType<typeof TimestampSchema>>("Timestamp", {
+                hour: info.timestamp.hour,
+                minute: info.timestamp.minute,
+                second: info.timestamp.second,
+              });
               const newGeoData = this.realm.create<GeoDataSchema>("GeoData", {
                 ids: info.ids,
                 timestamp: newTimestamp,
