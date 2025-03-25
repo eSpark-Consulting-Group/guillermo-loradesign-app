@@ -1,16 +1,23 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, Platform } from "react-native";
 import { primaryColor } from "../constants/Colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const BottomTabBar = ({
   state,
   descriptors,
   navigation,
 }: BottomTabBarProps) => {
+  const insets = useSafeAreaInsets()
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { height: Platform.OS == "ios" ? 60 + insets.bottom : 60 },
+      ]}
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label = options.tabBarLabel ?? options.title ?? route.name;

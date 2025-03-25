@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { MyText } from "../components/MyText";
-import { Feather } from "@expo/vector-icons";
+import { Feather, AntDesign } from "@expo/vector-icons";
 import { primaryColor } from "../constants/Colors";
 import { settingsOptions } from "../constants";
 import { useSelector } from "react-redux";
@@ -226,12 +226,21 @@ const Settings = () => {
                     >
                       {isOnline ? "Online" : "Offline"}
                     </MyText>
-                    <Feather
-                      name="check-circle"
-                      size={18}
-                      color={isOnline ? "#28A745" : "red"}
-                      style={styles.statusIcon}
-                    />
+                    {isOnline ? (
+                      <Feather
+                        name="check-circle"
+                        size={18}
+                        color={"#28A745"}
+                        style={styles.statusIcon}
+                      />
+                    ) : (
+                      <AntDesign
+                        size={18}
+                        name="warning"
+                        color={"red"}
+                        style={styles.statusIcon}
+                      />
+                    )}
                   </View>
                 )}
 
