@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
 import DevicesList from "../components/DevicesList";
 import { MyText } from "../components/MyText";
 import {
@@ -28,7 +27,6 @@ const BaseStationSelection = () => {
   const navigation = useNavigation<BaseStationSelectionProps["navigation"]>();
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
   const {
     startScan,
     scannedDevices,
@@ -71,7 +69,6 @@ const BaseStationSelection = () => {
 
   useEffect(() => {
     if (connectedDevice && deviceData) {
-      dispatch(selectDevice(deviceData));
       navigation.navigate("BottomTabs", {
         device: deviceData,
       });
