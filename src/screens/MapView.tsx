@@ -37,8 +37,8 @@ const MapView = () => {
   return (
     <View style={styles.container}>
       <MapComponent
-        geoData={device?.geoData??[]}
-        onMarkerPress={handleMarkerPress}
+      geoData={device?.geoData.length === 1 ? device.geoData : selectedDevice?.geoData ?? []}
+       onMarkerPress={handleMarkerPress}
       />
       <BottomSheetComponent
         visible={isBottomSheetVisible}

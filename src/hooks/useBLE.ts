@@ -3,9 +3,10 @@ import { BleManager, Device } from "react-native-ble-plx";
 import { Buffer } from "buffer";
 import { Platform, PermissionsAndroid } from "react-native";
 import { GeoData, BleDevice } from "../types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DatabaseService from "../database/services/DatabaseService";
 import { RootState } from "../store";
+import { selectDevice } from "../features/device/deviceSlice";
 
 const UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
 const TX_CHARACTERISTIC_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E";
@@ -18,9 +19,17 @@ export const useBLE = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [deviceData, setDeviceData] = useState<BleDevice | null>(null);
+  const dispatch = useDispatch();
   const selectedDevice = useSelector(
     (state: RootState) => state.device.selectedDevice
   );
+
+  useEffect(() => {
+    if (deviceData) {
+      dispatch(selectDevice(deviceData));
+      console.log("saving redux")
+    }
+  }, [deviceData, dispatch]);
 
   const requestPermissions = async () => {
     if (Platform.OS === "android") {
