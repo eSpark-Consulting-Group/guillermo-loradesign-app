@@ -22,12 +22,6 @@ export const useBLE = () => {
     (state: RootState) => state.device.selectedDevice
   );
 
-  useEffect(() => {
-    return () => {
-      bleManager.destroy();
-    };
-  }, []);
-
   const requestPermissions = async () => {
     if (Platform.OS === "android") {
       await PermissionsAndroid.requestMultiple([

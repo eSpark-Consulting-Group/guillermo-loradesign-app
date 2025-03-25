@@ -18,7 +18,11 @@ import { primaryColor } from "../constants/Colors";
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
 
-const BottomTabs = ({ route }: { route: { params: { device: BleDevice } } }) => {
+const BottomTabs = ({
+  route,
+}: {
+  route: { params: { device: BleDevice } };
+}) => {
   const { device } = route.params;
 
   return (
