@@ -28,6 +28,8 @@ import {
 import { showToast } from "../utils/showToast";
 import { formatDate } from "../utils/DateFormat";
 import { useBLE } from "../hooks/useBLE";
+import DatabaseService from "../database/services/DatabaseService";
+import OverlayLoader from "../components/OverlayLoader";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -68,8 +70,14 @@ const Settings = () => {
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-      await downloadDeviceInfoCSV(selectedDevice, selectedDevice?.geoData ?? []);
-      showToast("The CSV file has been saved successfully","success")
+      const devices = await DatabaseService.getAllDevices();
+      const device = devices.find((device) => device.id === selectedDevice?.id);
+      if (!device) {
+        showToast("Device not found in the database", "error");
+        return;
+      }
+      await downloadDeviceInfoCSV(device, device.geoData);
+      showToast("The CSV file has been saved successfully", "success");
     } catch (error) {
       console.error("Error downloading CSV:", error);
       showToast("An error occurred while downloading the file", "error");
@@ -78,7 +86,7 @@ const Settings = () => {
     }
   };
 
-  const handleStartDateChange = (event:any, date:any) => {
+  const handleStartDateChange = (event: any, date: any) => {
     setShowStartPicker(false);
     if (!date) return;
 
@@ -94,7 +102,7 @@ const Settings = () => {
     }, 300);
   };
 
-  const handleEndDateChange = (event:any, date:any) => {
+  const handleEndDateChange = (event: any, date: any) => {
     setShowEndPicker(false);
     if (!date) return;
 
@@ -108,13 +116,13 @@ const Settings = () => {
     filterDataByDateRange(startDate, date);
   };
 
-  const filterDataByDateRange = (start:any, end:any) => {
+  const filterDataByDateRange = (start: any, end: any) => {
     const startTime = new Date(start);
     startTime.setHours(0, 0, 0, 0);
 
     const endTime = new Date(end);
     endTime.setHours(23, 59, 59, 999);
-    
+
     const filtered = (selectedDevice?.geoData ?? []).filter((item) => {
       if (!item) return false;
 
@@ -146,30 +154,31 @@ const Settings = () => {
     setEndDate(new Date());
   };
 
-  
-    const handlePress = (device: BleDevice, item: GeoData) => {
-      if (!device) return;
-  
-      const selectedDevice: BleDevice = {
-        ...device,
-        geoData: [item],
-      };
-  
-      navigation.navigate("Map", { device: selectedDevice });
+  const handlePress = (device: BleDevice, item: GeoData) => {
+    if (!device) return;
+
+    const selectedDevice: BleDevice = {
+      ...device,
+      geoData: [item],
     };
-  
+
+    navigation.navigate("Map", {
+      device: selectedDevice,
+      redirectedFromTable: true,
+    });
+  };
 
   const renderItem = ({ item, index }: { item: GeoData; index: number }) => (
     <Pressable
       style={[styles.row, index % 2 === 0 ? styles.evenRow : styles.oddRow]}
-      onPress={() => selectedDevice && handlePress(selectedDevice,item)}
+      onPress={() => selectedDevice && handlePress(selectedDevice, item)}
     >
       <MyText style={[styles.cell, { width: "30%" }]}>
-      {formatDate(item.timestamp)}
-            </MyText>
+        {formatDate(item.timestamp)}
+      </MyText>
       <View style={[styles.deviceInfoContainer, { width: "65%" }]}>
         <Pressable
-          onPress={() => selectedDevice && handlePress(selectedDevice,item)}
+          onPress={() => selectedDevice && handlePress(selectedDevice, item)}
         >
           <MyText style={styles.deviceTitle}>
             {`${item.latitude}, ${item.longitude}`}
@@ -181,6 +190,7 @@ const Settings = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <OverlayLoader isShow={isDownloading} />
       <View style={styles.content}>
         {settingsOptions.map((option) => (
           <View key={option.id} style={styles.card}>

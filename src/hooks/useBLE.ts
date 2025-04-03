@@ -112,25 +112,33 @@ export const useBLE = () => {
             const parsedData = parseGeolocationData(char.value);
             setGeoData(parsedData);
             setDeviceData((prev) => {
-              const exists = prev?.geoData?.some(
-                (info) => JSON.stringify(info) === JSON.stringify(parsedData)
-              );
-
-              if (exists) {
+              if (!parsedData) {
                 return prev;
               }
-
+              const updatedGeoData = prev?.geoData?.map((info) => {
+                if (info.ids[0] === parsedData?.ids[0]) {
+                  return { ...info, ...parsedData }; 
+                }
+                return info;
+              }) || [];
+            
+              const exists = updatedGeoData.some(
+                (info) => JSON.stringify(info) === JSON.stringify(parsedData)
+              );
+            
+              if (!exists) {
+                updatedGeoData.push(parsedData);
+              }
+            
               const updatedDeviceData: BleDevice = {
                 id: prev?.id ?? device.id,
                 name: prev?.name ?? device.name ?? "",
-                geoData: parsedData
-                  ? [...(prev?.geoData || []), parsedData]
-                  : prev?.geoData || [],
+                geoData: updatedGeoData,
               };
               DatabaseService.saveDevice(updatedDeviceData);
               return updatedDeviceData;
             });
-            // console.log("Parsed Data:", parsedData);
+            console.log("Parsed Data:", parsedData);
           }
         }
       );

@@ -32,7 +32,7 @@ const TableComponent = ({ data }: TableComponentProps) => {
       geoData: [item],
     };
 
-    navigation.navigate("Map", { device: selectedDevice });
+    navigation.navigate("Map", { device: selectedDevice, redirectedFromTable:true });
   };
 
   return (
@@ -46,7 +46,7 @@ const TableComponent = ({ data }: TableComponentProps) => {
 
       <FlatList
         data={data?.geoData}
-        keyExtractor={(item) => item.ids.toString()}
+        keyExtractor={(item, index) =>`${item.latitude}-${item.longitude}-${index}`}
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <Pressable
@@ -60,7 +60,9 @@ const TableComponent = ({ data }: TableComponentProps) => {
               {formatDate(item.timestamp)}
             </MyText>
             <View style={[styles.deviceInfoContainer, { width: "70%" }]}>
-              <Pressable key={item.ids[0]} onPress={() => handlePress(item)}>
+              <Pressable key={`${item.latitude}-${item.longitude}-${index}`}
+
+               onPress={() => handlePress(item)}>
                 <MyText style={styles.deviceTitle}>
                   {" "}
                   {`${item.latitude}, ${item.longitude}`}

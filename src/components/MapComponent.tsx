@@ -63,16 +63,16 @@ useEffect(() => {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={getInitialRegion()}
-        zoomEnabled={false}
+        zoomEnabled={true}
         zoomControlEnabled={false}
-        scrollEnabled={false}
-        pitchEnabled={false}
-        rotateEnabled={false}
-        moveOnMarkerPress={false}
+        scrollEnabled={true}
+        pitchEnabled={true}
+        rotateEnabled={true}
+        moveOnMarkerPress={true}
       >
         {geoData.map((device, index) => (
           <Marker
-            key={`${device.ids.join("-")}-${index}`} // Unique key with index fallback
+            key={`${device.latitude}-${device.longitude}-${index}`}
             coordinate={{
               latitude: geoData[index].latitude,
               longitude: geoData[index].longitude,
