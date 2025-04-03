@@ -39,7 +39,6 @@ class DatabaseService {
                 d.longitude === info.longitude
             );
             if (!existingInfo) {
-              console.log("existingInfo",existingInfo)
               const newTimestamp = this.realm.create<InstanceType<typeof TimestampSchema>>("Timestamp", {
                 hour: info.timestamp.hour,
                 minute: info.timestamp.minute,

@@ -21,13 +21,13 @@ const MapView = () => {
   const [selectedDetails, setSelectedDetails] = useState<GeoData>();
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
-  const { device } = route.params;
+  const { device,redirectedFromTable } = route.params;
   const selectedDevice = useSelector(
     (state: RootState) => state.device.selectedDevice
   );
 
   useEffect(() => {
-    console.log("selectedDevice", JSON.stringify(selectedDevice));
+    console.log("selectedDevice", JSON.stringify(redirectedFromTable));
   }, []);
   const handleMarkerPress = (geoData: GeoData) => {
       setSelectedDetails(geoData);
@@ -37,8 +37,8 @@ const MapView = () => {
   return (
     <View style={styles.container}>
       <MapComponent
-      geoData={device?.geoData.length === 1 ? device.geoData : selectedDevice?.geoData ?? []}
-       onMarkerPress={handleMarkerPress}
+        geoData={redirectedFromTable==true ? (device?.geoData?.length === 1 ? device.geoData : selectedDevice?.geoData ?? []) : selectedDevice?.geoData??[]}
+        onMarkerPress={handleMarkerPress}
       />
       <BottomSheetComponent
         visible={isBottomSheetVisible}

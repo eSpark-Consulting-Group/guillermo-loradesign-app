@@ -8,7 +8,7 @@ export type RootStackParamList = {
 };
 
 export type BottomTabParamList = {
-  Map: { device?: BleDevice};
+  Map: { device?: BleDevice, redirectedFromTable: boolean };
   Settings: { device?: BleDevice };
   Table: { device?: BleDevice };
 };
