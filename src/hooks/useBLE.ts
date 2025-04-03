@@ -27,7 +27,7 @@ export const useBLE = () => {
   useEffect(() => {
     if (deviceData) {
       dispatch(selectDevice(deviceData));
-      console.log("saving redux")
+      console.log("saving redux");
     }
   }, [deviceData, dispatch]);
 
@@ -221,6 +221,7 @@ export const useBLE = () => {
         console.warn("No device available for reconnection.");
         return;
       }
+
       if (!device) {
         console.error("Failed to reconnect: No valid device instance.");
         return;
@@ -233,8 +234,8 @@ export const useBLE = () => {
 
       console.log("Reconnection successful!");
 
-      // Ensure the device is set before enabling notifications!
       await enableNotifications(discovered);
+      return true;
     } catch (error) {
       console.error("Reconnection failed:", error);
       setIsConnected(false);
