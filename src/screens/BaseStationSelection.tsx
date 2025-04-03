@@ -47,7 +47,15 @@ const BaseStationSelection = () => {
   const initializeScan = async () => {
     setLoading(true); // Start loader
     try {
-      await reconnect();
+      const isReconnected = await reconnect();
+      console.log("Reconnected:", isReconnected);
+
+      if (isReconnected) {
+        navigation.navigate("BottomTabs", {
+          device: deviceData!,
+        });
+        return;
+      }
       await startScan(); // Auto start scanning when component mounts
       setLoading(false);
     } finally {
@@ -68,12 +76,12 @@ const BaseStationSelection = () => {
   }, [isScanning]);
 
   useEffect(() => {
-    if (connectedDevice && deviceData) {
+    if (deviceData) {
       navigation.navigate("BottomTabs", {
         device: deviceData,
       });
     }
-  }, [connectedDevice, deviceData]);
+  }, [deviceData]);
 
   return (
     <SafeAreaView style={styles.container}>
