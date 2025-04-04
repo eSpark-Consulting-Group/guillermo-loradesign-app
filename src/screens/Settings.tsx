@@ -191,94 +191,96 @@ const Settings = () => {
   return (
     <SafeAreaView style={styles.container}>
       <OverlayLoader isShow={isDownloading} />
-      <View style={styles.content}>
-        {settingsOptions.map((option) => (
-          <View key={option.id} style={styles.card}>
-            <TouchableOpacity
-              style={styles.option}
-              activeOpacity={0.7}
-              onPress={
-                option.id === 1
-                  ? handleDownload
-                  : option.id === 3
-                  ? handleDateRangeSelect
-                  : () => {
-                      if (!isOnline) {
-                        console.log("reconnect logic");
-                        reconnect();
+      <View style={styles.mainContainer}>
+        <View style={styles.optionsSection}>
+          {settingsOptions.map((option) => (
+            <View key={option.id} style={styles.card}>
+              <TouchableOpacity
+                style={styles.option}
+                activeOpacity={0.7}
+                onPress={
+                  option.id === 1
+                    ? handleDownload
+                    : option.id === 3
+                    ? handleDateRangeSelect
+                    : () => {
+                        if (!isOnline) {
+                          console.log("reconnect logic");
+                          reconnect();
+                        }
                       }
-                    }
-              }
-            >
-              <View style={styles.optionContent}>
-                <MyText style={styles.optionText}>
-                  {option.id === 3 && filteredData.length > 0
-                    ? `Date Range: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
-                    : option.text}
-                </MyText>
-              </View>
-              <View style={styles.rightSection}>
-                {option.id === 1 && (
-                  <Feather
-                    name={option.icon as any}
-                    size={22}
-                    color={primaryColor}
-                    style={styles.icon}
-                  />
-                )}
-                {option.id === 2 && (
-                  <View style={styles.statusContainer}>
-                    <MyText
-                      style={[
-                        styles.statusText,
-                        { color: isOnline ? "#28A745" : "red" },
-                      ]}
-                    >
-                      {isOnline ? "Online" : "Offline"}
-                    </MyText>
-                    {isOnline ? (
-                      <Feather
-                        name="check-circle"
-                        size={18}
-                        color={"#28A745"}
-                        style={styles.statusIcon}
-                      />
-                    ) : (
-                      <AntDesign
-                        size={18}
-                        name="warning"
-                        color={"red"}
-                        style={styles.statusIcon}
-                      />
-                    )}
-                  </View>
-                )}
-
-                {option.id === 3 && filteredData.length > 0 ? (
-                  <TouchableOpacity onPress={clearDateFilter}>
+                }
+              >
+                <View style={styles.optionContent}>
+                  <MyText style={styles.optionText}>
+                    {option.id === 3 && filteredData.length > 0
+                      ? `Date Range: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+                      : option.text}
+                  </MyText>
+                </View>
+                <View style={styles.rightSection}>
+                  {option.id === 1 && (
                     <Feather
-                      name="x-circle"
+                      name={option.icon as any}
                       size={22}
                       color={primaryColor}
                       style={styles.icon}
                     />
-                  </TouchableOpacity>
-                ) : (
-                  option.id === 3 && (
-                    <TouchableOpacity onPress={handleDateRangeSelect}>
+                  )}
+                  {option.id === 2 && (
+                    <View style={styles.statusContainer}>
+                      <MyText
+                        style={[
+                          styles.statusText,
+                          { color: isOnline ? "#28A745" : "red" },
+                        ]}
+                      >
+                        {isOnline ? "Online" : "Offline"}
+                      </MyText>
+                      {isOnline ? (
+                        <Feather
+                          name="check-circle"
+                          size={18}
+                          color={"#28A745"}
+                          style={styles.statusIcon}
+                        />
+                      ) : (
+                        <AntDesign
+                          size={18}
+                          name="warning"
+                          color={"red"}
+                          style={styles.statusIcon}
+                        />
+                      )}
+                    </View>
+                  )}
+
+                  {option.id === 3 && filteredData.length > 0 ? (
+                    <TouchableOpacity onPress={clearDateFilter}>
                       <Feather
-                        name="calendar"
+                        name="x-circle"
                         size={22}
                         color={primaryColor}
                         style={styles.icon}
                       />
                     </TouchableOpacity>
-                  )
-                )}
-              </View>
-            </TouchableOpacity>
-          </View>
-        ))}
+                  ) : (
+                    option.id === 3 && (
+                      <TouchableOpacity onPress={handleDateRangeSelect}>
+                        <Feather
+                          name="calendar"
+                          size={22}
+                          color={primaryColor}
+                          style={styles.icon}
+                        />
+                      </TouchableOpacity>
+                    )
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
 
         {showStartPicker && (
           <View style={styles.pickerContainer}>
@@ -299,14 +301,14 @@ const Settings = () => {
               value={endDate}
               mode="date"
               display="default"
-              minimumDate={startDate} // Prevent selecting end date before start date
+              minimumDate={startDate}
               onChange={handleEndDateChange}
             />
           </View>
         )}
 
         {filteredData.length > 0 && (
-          <>
+          <View style={styles.listContainer}>
             <View style={styles.header}>
               <MyText style={[styles.headerText, { width: "40%" }]}>
                 Date
@@ -321,18 +323,38 @@ const Settings = () => {
               keyExtractor={(item) => item.ids[0].toString()}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
+              style={styles.flatList}
+              contentContainerStyle={styles.flatListContent}
             />
-          </>
+          </View>
         )}
       </View>
     </SafeAreaView>
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  mainContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  optionsSection: {
+    marginBottom: 15,
+  },
+  listContainer: {
+    flex: 1, 
+  },
+  flatList: {
+    flex: 1,
+  },
+  flatListContent: {
+    paddingBottom: 20,
   },
   content: {
     marginTop: 20,
@@ -344,6 +366,7 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     paddingVertical: 12,
     borderRadius: 10,
+    marginBottom: 5,
   },
   headerText: {
     fontWeight: "bold",
@@ -446,5 +469,4 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
-
 export default Settings;
