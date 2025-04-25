@@ -23,6 +23,7 @@ export const useBLE = () => {
   const selectedDevice = useSelector(
     (state: RootState) => state.device.selectedDevice
   );
+  const reconnectingRef = useRef(false);
 
   useEffect(() => {
     if (deviceData) {
@@ -115,21 +116,22 @@ export const useBLE = () => {
               if (!parsedData) {
                 return prev;
               }
-              const updatedGeoData = prev?.geoData?.map((info) => {
-                if (info.ids[0] === parsedData?.ids[0]) {
-                  return { ...info, ...parsedData }; 
-                }
-                return info;
-              }) || [];
-            
+              const updatedGeoData =
+                prev?.geoData?.map((info) => {
+                  if (info.ids[0] === parsedData?.ids[0]) {
+                    return { ...info, ...parsedData };
+                  }
+                  return info;
+                }) || [];
+
               const exists = updatedGeoData.some(
                 (info) => JSON.stringify(info) === JSON.stringify(parsedData)
               );
-            
+
               if (!exists) {
                 updatedGeoData.push(parsedData);
               }
-            
+
               const updatedDeviceData: BleDevice = {
                 id: prev?.id ?? device.id,
                 name: prev?.name ?? device.name ?? "",
@@ -209,13 +211,18 @@ export const useBLE = () => {
     const interval = setInterval(async () => {
       const status = await connectionStatus();
       setIsConnected(status);
-    }, 2000);
+      // if (status === false) {
+      //   await reconnect();
+      // }
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);
 
   //Reconnection logic upon pressing Bluetooth Status Button on settings screen(tested and verified)
   const reconnect = async () => {
+    if (reconnectingRef.current) return; // prevent multiple attempts
+    reconnectingRef.current = true;
     try {
       let device: Device | null = null;
 
@@ -243,10 +250,29 @@ export const useBLE = () => {
       console.log("Reconnection successful!");
 
       await enableNotifications(discovered);
+      bleManager.onDeviceDisconnected(
+        device.id,
+        async (error, disconnectedDevice) => {
+          if (error) {
+            console.error("Disconnection error:", error);
+            return;
+          }
+
+          console.log("Device disconnected:", disconnectedDevice);
+
+          setIsConnected(false);
+          setConnectedDevice(null);
+
+          // Attempt to reconnect
+          await reconnect();
+        }
+      );
       return true;
     } catch (error) {
       console.error("Reconnection failed:", error);
       setIsConnected(false);
+    } finally {
+      reconnectingRef.current = false;
     }
   };
 
