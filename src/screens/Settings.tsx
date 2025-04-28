@@ -77,7 +77,6 @@ const Settings = () => {
         return;
       }
       await downloadDeviceInfoCSV(device, device.geoData);
-      showToast("The CSV file has been saved successfully", "success");
     } catch (error) {
       console.error("Error downloading CSV:", error);
       showToast("An error occurred while downloading the file", "error");
@@ -333,7 +332,6 @@ const Settings = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -348,7 +346,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   listContainer: {
-    flex: 1, 
+    flex: 1,
   },
   flatList: {
     flex: 1,

@@ -51,6 +51,7 @@ export const downloadDeviceInfoCSV = async (
   try {
     if (Platform.OS === "android") {
       await RNFS.writeFile(downloadPath, csvContent.trim(), "utf8"); // Trim final string to remove any extra new lines
+      showToast("The CSV file has been saved successfully", "success");
       console.log("CSV saved to:", downloadPath);
     } else {
       await RNFS.writeFile(downloadPath, csvContent.trim(), "utf8");
@@ -59,8 +60,12 @@ export const downloadDeviceInfoCSV = async (
         url: downloadPath,
         type: "text/csv",
       };
-      await Share?.share(options);
-      console.log("CSV saved in iOS");
+      const shared = await Share?.share(options);
+      console.log("shared");
+      if (shared.action == "sharedAction") {
+        showToast("The CSV file has been saved successfully", "success");
+        console.log("CSV saved in iOS");
+      }
     }
   } catch (error) {
     console.error("Error saving CSV file:", error);
