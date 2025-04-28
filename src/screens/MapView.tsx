@@ -21,28 +21,36 @@ const MapView = () => {
   const [selectedDetails, setSelectedDetails] = useState<GeoData>();
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const route = useRoute<MapViewProps["route"]>();
-  const { device,redirectedFromTable } = route.params;
+  const { device, redirectedFromTable } = route.params;
   const selectedDevice = useSelector(
     (state: RootState) => state.device.selectedDevice
   );
 
   useEffect(() => {
-    console.log("selectedDevice", JSON.stringify(redirectedFromTable));
+    console.log("selectedDevice", selectedDevice);
   }, []);
   const handleMarkerPress = (geoData: GeoData) => {
-      setSelectedDetails(geoData);
-      setBottomSheetVisible(true);
+    setSelectedDetails(geoData);
+    setBottomSheetVisible(true);
   };
+
+  console.log("MapView", device?.geoData);
 
   return (
     <View style={styles.container}>
       <MapComponent
-        geoData={redirectedFromTable==true ? (device?.geoData?.length === 1 ? device.geoData : selectedDevice?.geoData ?? []) : selectedDevice?.geoData??[]}
+        geoData={
+          redirectedFromTable == true
+            ? device?.geoData?.length === 1
+              ? device.geoData
+              : selectedDevice?.geoData ?? []
+            : selectedDevice?.geoData ?? []
+        }
         onMarkerPress={handleMarkerPress}
       />
       <BottomSheetComponent
         visible={isBottomSheetVisible}
-        geoData={selectedDetails||null}
+        geoData={selectedDetails || null}
         onClose={() => setBottomSheetVisible(false)}
       />
     </View>

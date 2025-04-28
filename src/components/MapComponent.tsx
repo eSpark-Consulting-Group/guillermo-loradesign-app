@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { View, StyleSheet, InteractionManager } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { GeoData } from "../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export interface MapComponentProps {
   geoData: GeoData[];
@@ -10,6 +12,10 @@ export interface MapComponentProps {
 
 const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
   const mapRef = useRef<MapView>(null);
+
+  const selectedDevice = useSelector(
+    (state: RootState) => state.device.selectedDevice
+  );
 
   const getInitialRegion = (): Region | undefined => {
     if (geoData.length === 0) return undefined;
@@ -30,31 +36,32 @@ const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
     };
   };
 
-useEffect(() => {
-  console.log("Device Info:", JSON.stringify(geoData));
-  if (!mapRef.current || geoData.length === 0) return;
-  InteractionManager.runAfterInteractions(() => {
-    if (geoData.length === 1) {
-      mapRef?.current?.animateToRegion({
-        latitude: geoData[0].latitude,
-        longitude: geoData[0].longitude,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      });
-    } else {
-      mapRef?.current?.fitToCoordinates(
-        geoData.map((device) => ({
-          latitude: device.latitude,
-          longitude: device.longitude,
-        })),
-        {
-          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-          animated: true,
+  useEffect(() => {
+    if (!mapRef.current || geoData.length === 0) return;
+    setTimeout(() => {
+      InteractionManager.runAfterInteractions(() => {
+        if (geoData.length === 1) {
+          mapRef?.current?.animateToRegion({
+            latitude: geoData[0].latitude,
+            longitude: geoData[0].longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          });
+        } else {
+          mapRef?.current?.fitToCoordinates(
+            geoData.map((device) => ({
+              latitude: device.latitude,
+              longitude: device.longitude,
+            })),
+            {
+              edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+              animated: true,
+            }
+          );
         }
-      );
-    }
-  });
-}, [geoData]);
+      });
+    }, 100);
+  }, [geoData]);
 
   return (
     <View style={styles.container}>
@@ -70,14 +77,14 @@ useEffect(() => {
         rotateEnabled={true}
         moveOnMarkerPress={true}
       >
-        {geoData.map((device, index) => (
+        {selectedDevice?.geoData.map((device, index) => (
           <Marker
             key={`${device.latitude}-${device.longitude}-${index}`}
             coordinate={{
-              latitude: geoData[index].latitude,
-              longitude: geoData[index].longitude,
+              latitude: device.latitude,
+              longitude: device.longitude,
             }}
-            onPress={() => onMarkerPress(geoData[index])}
+            onPress={() => onMarkerPress(selectedDevice?.geoData[index])}
           />
         ))}
       </MapView>
