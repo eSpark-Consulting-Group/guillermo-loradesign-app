@@ -89,7 +89,12 @@ export const useBLE = () => {
       setConnectedDevice(discovered);
       setIsConnected(true);
       console.log("Connected to:", device.name);
-
+      const updatedDeviceData: BleDevice = {
+        id: device.id,
+        name: device.name ?? "",
+        geoData: null,
+      };
+      setDeviceData(updatedDeviceData);
       enableNotifications(discovered);
     } catch (error) {
       console.error("Connection error:", error);
@@ -105,7 +110,7 @@ export const useBLE = () => {
         TX_CHARACTERISTIC_UUID,
         (error, char) => {
           if (error) {
-            console.error("Notification error:", error);
+            console.error("Notification error:", error.reason);
             return;
           }
 
@@ -144,7 +149,6 @@ export const useBLE = () => {
           }
         }
       );
-
       console.log("Notifications enabled on TX Characteristic");
     } catch (error) {
       console.error("Failed to enable notifications:", error);

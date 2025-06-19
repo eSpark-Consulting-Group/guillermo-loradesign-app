@@ -77,16 +77,17 @@ const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
         rotateEnabled={true}
         moveOnMarkerPress={true}
       >
-        {selectedDevice?.geoData.map((device, index) => (
-          <Marker
-            key={`${device.latitude}-${device.longitude}-${index}`}
-            coordinate={{
-              latitude: device.latitude,
-              longitude: device.longitude,
-            }}
-            onPress={() => onMarkerPress(selectedDevice?.geoData[index])}
-          />
-        ))}
+        {selectedDevice?.geoData &&
+          selectedDevice?.geoData.map((device, index) => (
+            <Marker
+              key={`${device?.latitude}-${device?.longitude}-${index}`}
+              coordinate={{
+                latitude: device.latitude,
+                longitude: device.longitude,
+              }}
+              onPress={() => onMarkerPress(selectedDevice!.geoData![index])}
+            />
+          ))}
       </MapView>
     </View>
   );
