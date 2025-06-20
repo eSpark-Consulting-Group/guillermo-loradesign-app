@@ -70,11 +70,6 @@ const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={getInitialRegion()}
-        zoomEnabled={false}
-        zoomControlEnabled={false}
-        scrollEnabled={true}
-        pitchEnabled={true}
-        rotateEnabled={true}
         moveOnMarkerPress={true}
       >
         {selectedDevice?.geoData &&
