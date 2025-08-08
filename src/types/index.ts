@@ -5,7 +5,7 @@ export interface BleDevice {
 }
 
 export interface GeoData {
-  ids: number[];
+  id: number | string;
   timestamp: Timestamp;
   latitude: number;
   longitude: number;

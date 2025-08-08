@@ -71,6 +71,8 @@ const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
         style={styles.map}
         initialRegion={getInitialRegion()}
         moveOnMarkerPress={true}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
       >
         {selectedDevice?.geoData &&
           selectedDevice?.geoData.map((device, index) => (

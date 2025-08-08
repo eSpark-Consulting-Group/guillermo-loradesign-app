@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
 import { GeoData } from "../types";
 import { formatDate } from "../utils/DateFormat"; // Ensure this function is available
 
@@ -38,13 +32,13 @@ const BottomSheetComponent = ({
           <Text style={styles.title}>Device Info</Text>
 
           <View style={styles.itemContainer}>
+            <Text style={styles.itemText}>Device Id: {geoData.id}</Text>
             <Text style={styles.itemText}>Latitude: {geoData.latitude}</Text>
             <Text style={styles.itemText}>Longitude: {geoData.longitude}</Text>
             <Text style={styles.itemText}>
               Timestamp: {formatDate(geoData.timestamp)}
             </Text>
           </View>
-
         </View>
       </View>
     </Modal>

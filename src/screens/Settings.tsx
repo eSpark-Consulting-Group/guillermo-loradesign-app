@@ -319,7 +319,7 @@ const Settings = () => {
 
             <FlatList
               data={filteredData}
-              keyExtractor={(item) => item.ids[0].toString()}
+              keyExtractor={(item) => item.id.toString()}
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
               style={styles.flatList}

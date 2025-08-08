@@ -142,7 +142,7 @@ export const useBLE = () => {
               }
               const updatedGeoData =
                 prev?.geoData?.map((info) => {
-                  if (info.ids[0] === parsedData?.ids[0]) {
+                  if (info.id === parsedData?.id) {
                     return { ...info, ...parsedData };
                   }
                   return info;
@@ -178,7 +178,9 @@ export const useBLE = () => {
   const parseGeolocationData = (base64Data: string): GeoData | null => {
     try {
       const buffer = Buffer.from(base64Data, "base64");
-      //   console.log("Base64 Data:", base64Data);
+      console.log("Base64 Data:", buffer);
+      console.log("buffer Data:", buffer.readUIntLE(0x00, 1).toString(16));
+
       //   console.log("Decoded Buffer Length:", buffer.length);
       //   console.log("Decoded Buffer:", buffer.toString("hex"));
 
@@ -190,11 +192,7 @@ export const useBLE = () => {
       }
 
       return {
-        ids: [
-          buffer.readUInt32LE(0x00),
-          buffer.readUInt32LE(0x04),
-          buffer.readUInt32LE(0x08),
-        ],
+        id: buffer.readUIntLE(0x00, 1).toString(16),
         timestamp: {
           hour: buffer.readUInt8(0x0c),
           minute: buffer.readUInt8(0x0d),
