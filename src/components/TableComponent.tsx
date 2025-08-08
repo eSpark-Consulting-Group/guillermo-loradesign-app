@@ -41,8 +41,9 @@ const TableComponent = ({ data }: TableComponentProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <MyText style={[styles.headerText, { width: "30%" }]}>Date</MyText>
-        <MyText style={[styles.headerText, { width: "70%" }]}>
+        <MyText style={[styles.headerText, { width: "20%" }]}>Device ID</MyText>
+        <MyText style={[styles.headerText, { width: "20%" }]}>Date</MyText>
+        <MyText style={[styles.headerText, { width: "60%" }]}>
           GNSS Location (Latitude,Longitude)
         </MyText>
       </View>
@@ -61,10 +62,11 @@ const TableComponent = ({ data }: TableComponentProps) => {
             ]}
             onPress={() => handlePress(item)}
           >
-            <MyText style={[styles.cell, { width: "30%" }]}>
+            <MyText style={[styles.cell, { width: "20%" }]}>{item.id}</MyText>
+            <MyText style={[styles.cell, { width: "20%" }]}>
               {formatDate(item.timestamp)}
             </MyText>
-            <View style={[styles.deviceInfoContainer, { width: "70%" }]}>
+            <View style={[styles.deviceInfoContainer, { width: "60%" }]}>
               <Pressable
                 key={`${item.latitude}-${item.longitude}-${index}`}
                 onPress={() => handlePress(item)}
