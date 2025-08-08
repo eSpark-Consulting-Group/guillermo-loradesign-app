@@ -1,8 +1,10 @@
+import { Platform, PermissionsAndroid, Share } from "react-native";
+import RNFS from "react-native-fs";
+import FileViewer from "react-native-file-viewer";
+
 import { GeoData, BleDevice } from "@/src/types";
 import { formatDate } from "@/src/utils/DateFormat";
 import { showToast } from "@/src/utils/showToast";
-import { Platform, PermissionsAndroid, Share } from "react-native";
-import RNFS from "react-native-fs";
 
 export const downloadDeviceInfoCSV = async (
   selectedDevice: BleDevice | null,
@@ -53,6 +55,16 @@ export const downloadDeviceInfoCSV = async (
       await RNFS.writeFile(downloadPath, csvContent.trim(), "utf8"); // Trim final string to remove any extra new lines
       showToast("The CSV file has been saved successfully", "success");
       console.log("CSV saved to:", downloadPath);
+
+      // Open the file after saving
+      try {
+        await FileViewer.open(downloadPath, {
+          showOpenWithDialog: true,
+        });
+      } catch (error) {
+        console.error("Error opening CSV file:", error);
+        showToast("Could not open the CSV file", "error");
+      }
     } else {
       await RNFS.writeFile(downloadPath, csvContent.trim(), "utf8");
 

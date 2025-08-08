@@ -30,6 +30,7 @@
         "react-native": "0.76.7",
         "react-native-ble-plx": "^3.5.0",
         "react-native-document-picker": "^9.3.1",
+        "react-native-file-viewer": "^2.1.5",
         "react-native-fs": "^2.20.0",
         "react-native-gesture-handler": "~2.20.2",
         "react-native-maps": "1.18.0",
@@ -1546,6 +1547,8 @@
     "react-native-ble-plx": ["react-native-ble-plx@3.5.0", "", { "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-PeSnRswHLwLRVMQkOfDaRICtrGmo94WGKhlSC09XmHlqX2EuYgH+vNJpGcLkd8lyiYpEJyf8wlFAdj9Akliwmw=="],
 
     "react-native-document-picker": ["react-native-document-picker@9.3.1", "", { "dependencies": { "invariant": "^2.2.4" }, "peerDependencies": { "react": "*", "react-native": "*", "react-native-windows": "*" }, "optionalPeers": ["react-native-windows"] }, "sha512-Vcofv9wfB0j67zawFjfq9WQPMMzXxOZL9kBmvWDpjVuEcVK73ndRmlXHlkeFl5ZHVsv4Zb6oZYhqm9u5omJOPA=="],
+
+    "react-native-file-viewer": ["react-native-file-viewer@2.1.5", "", { "peerDependencies": { "react-native": ">=0.47" } }, "sha512-MGC6sx9jsqHdefhVQ6o0akdsPGpkXgiIbpygb2Sg4g4bh7v6K1cardLV1NwGB9A6u1yICOSDT/MOC//9Ez6EUg=="],
 
     "react-native-fs": ["react-native-fs@2.20.0", "", { "dependencies": { "base-64": "^0.1.0", "utf8": "^3.0.0" }, "peerDependencies": { "react-native": "*", "react-native-windows": "*" }, "optionalPeers": ["react-native-windows"] }, "sha512-VkTBzs7fIDUiy/XajOSNk0XazFE9l+QlMAce7lGuebZcag5CnjszB+u4BdqzwaQOdcYb5wsJIsqq4kxInIRpJQ=="],
 
