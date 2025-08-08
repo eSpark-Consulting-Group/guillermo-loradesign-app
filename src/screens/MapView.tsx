@@ -42,7 +42,7 @@ const MapView = () => {
         geoData={
           redirectedFromTable == true
             ? device?.geoData?.length === 1
-              ? device.geoData
+              ? device?.geoData
               : selectedDevice?.geoData ?? []
             : selectedDevice?.geoData ?? []
         }

@@ -70,23 +70,21 @@ const MapComponent = ({ geoData, onMarkerPress }: MapComponentProps) => {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={getInitialRegion()}
-        zoomEnabled={false}
-        zoomControlEnabled={false}
-        scrollEnabled={true}
-        pitchEnabled={true}
-        rotateEnabled={true}
         moveOnMarkerPress={true}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
       >
-        {selectedDevice?.geoData.map((device, index) => (
-          <Marker
-            key={`${device.latitude}-${device.longitude}-${index}`}
-            coordinate={{
-              latitude: device.latitude,
-              longitude: device.longitude,
-            }}
-            onPress={() => onMarkerPress(selectedDevice?.geoData[index])}
-          />
-        ))}
+        {selectedDevice?.geoData &&
+          selectedDevice?.geoData.map((device, index) => (
+            <Marker
+              key={`${device?.latitude}-${device?.longitude}-${index}`}
+              coordinate={{
+                latitude: device.latitude,
+                longitude: device.longitude,
+              }}
+              onPress={() => onMarkerPress(selectedDevice!.geoData![index])}
+            />
+          ))}
       </MapView>
     </View>
   );

@@ -32,7 +32,10 @@ const TableComponent = ({ data }: TableComponentProps) => {
       geoData: [item],
     };
 
-    navigation.navigate("Map", { device: selectedDevice, redirectedFromTable:true });
+    navigation.navigate("Map", {
+      device: selectedDevice,
+      redirectedFromTable: true,
+    });
   };
 
   return (
@@ -45,8 +48,10 @@ const TableComponent = ({ data }: TableComponentProps) => {
       </View>
 
       <FlatList
-        data={data?.geoData}
-        keyExtractor={(item, index) =>`${item.latitude}-${item.longitude}-${index}`}
+        data={data?.geoData || []}
+        keyExtractor={(item, index) =>
+          `${item.latitude}-${item.longitude}-${index}`
+        }
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <Pressable
@@ -60,17 +65,22 @@ const TableComponent = ({ data }: TableComponentProps) => {
               {formatDate(item.timestamp)}
             </MyText>
             <View style={[styles.deviceInfoContainer, { width: "70%" }]}>
-              <Pressable key={`${item.latitude}-${item.longitude}-${index}`}
-
-               onPress={() => handlePress(item)}>
+              <Pressable
+                key={`${item.latitude}-${item.longitude}-${index}`}
+                onPress={() => handlePress(item)}
+              >
                 <MyText style={styles.deviceTitle}>
-                  {" "}
                   {`${item.latitude}, ${item.longitude}`}
                 </MyText>
               </Pressable>
             </View>
           </Pressable>
         )}
+        ListEmptyComponent={
+          <View style={{ paddingTop: 10 }}>
+            <MyText style={{ textAlign: "center" }}>No data available</MyText>
+          </View>
+        }
       />
     </View>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 
@@ -18,7 +18,9 @@ type TableDetailsProps = StackScreenProps<
 
 const TableDetails = () => {
   const navigation = useNavigation<TableDetailsProps["navigation"]>();
-  const selectedDevice = useSelector((state: RootState) => state.device.selectedDevice);
+  const selectedDevice = useSelector(
+    (state: RootState) => state.device.selectedDevice
+  );
 
   return (
     <View style={styles.container}>

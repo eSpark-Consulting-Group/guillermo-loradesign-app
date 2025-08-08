@@ -19,6 +19,7 @@ export const useBLE = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [scannedDevices, setScannedDevices] = useState<Device[]>([]);
   const [deviceData, setDeviceData] = useState<BleDevice | null>(null);
+  const [deviceDisconnected, setDeviceDisconnected] = useState(false);
   const dispatch = useDispatch();
   const selectedDevice = useSelector(
     (state: RootState) => state.device.selectedDevice
@@ -89,8 +90,31 @@ export const useBLE = () => {
       setConnectedDevice(discovered);
       setIsConnected(true);
       console.log("Connected to:", device.name);
-
+      const updatedDeviceData: BleDevice = {
+        id: device.id,
+        name: device.name ?? "",
+        geoData: null,
+      };
+      setDeviceData(updatedDeviceData);
       enableNotifications(discovered);
+      bleManager.onDeviceDisconnected(
+        device.id,
+        async (error, disconnectedDevice) => {
+          if (error) {
+            console.error("Disconnection error:", error);
+            return;
+          }
+
+          console.log("Device disconnected:", disconnectedDevice);
+
+          setIsConnected(false);
+          setConnectedDevice(null);
+
+          // Attempt to reconnect
+          // await reconnect();
+          setDeviceDisconnected(true);
+        }
+      );
     } catch (error) {
       console.error("Connection error:", error);
       setIsConnected(false);
@@ -105,7 +129,7 @@ export const useBLE = () => {
         TX_CHARACTERISTIC_UUID,
         (error, char) => {
           if (error) {
-            console.error("Notification error:", error);
+            console.error("Notification error:", error.reason);
             return;
           }
 
@@ -118,7 +142,7 @@ export const useBLE = () => {
               }
               const updatedGeoData =
                 prev?.geoData?.map((info) => {
-                  if (info.ids[0] === parsedData?.ids[0]) {
+                  if (info.id === parsedData?.id) {
                     return { ...info, ...parsedData };
                   }
                   return info;
@@ -144,7 +168,6 @@ export const useBLE = () => {
           }
         }
       );
-
       console.log("Notifications enabled on TX Characteristic");
     } catch (error) {
       console.error("Failed to enable notifications:", error);
@@ -155,7 +178,9 @@ export const useBLE = () => {
   const parseGeolocationData = (base64Data: string): GeoData | null => {
     try {
       const buffer = Buffer.from(base64Data, "base64");
-      //   console.log("Base64 Data:", base64Data);
+      console.log("Base64 Data:", buffer);
+      console.log("buffer Data:", buffer.readUIntLE(0x00, 1).toString(16));
+
       //   console.log("Decoded Buffer Length:", buffer.length);
       //   console.log("Decoded Buffer:", buffer.toString("hex"));
 
@@ -167,11 +192,7 @@ export const useBLE = () => {
       }
 
       return {
-        ids: [
-          buffer.readUInt32LE(0x00),
-          buffer.readUInt32LE(0x04),
-          buffer.readUInt32LE(0x08),
-        ],
+        id: buffer.readUIntLE(0x00, 1).toString(16),
         timestamp: {
           hour: buffer.readUInt8(0x0c),
           minute: buffer.readUInt8(0x0d),
@@ -211,13 +232,13 @@ export const useBLE = () => {
     const interval = setInterval(async () => {
       const status = await connectionStatus();
       setIsConnected(status);
-      // if (status === false) {
-      //   await reconnect();
-      // }
+      if (status === false && deviceDisconnected) {
+        await reconnect();
+      }
     }, 1500);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [deviceDisconnected]);
 
   //Reconnection logic upon pressing Bluetooth Status Button on settings screen(tested and verified)
   const reconnect = async () => {
@@ -246,27 +267,12 @@ export const useBLE = () => {
       const discovered = await device.discoverAllServicesAndCharacteristics();
       setConnectedDevice(discovered);
       setIsConnected(true);
+      setDeviceDisconnected(false);
 
       console.log("Reconnection successful!");
 
       await enableNotifications(discovered);
-      bleManager.onDeviceDisconnected(
-        device.id,
-        async (error, disconnectedDevice) => {
-          if (error) {
-            console.error("Disconnection error:", error);
-            return;
-          }
 
-          console.log("Device disconnected:", disconnectedDevice);
-
-          setIsConnected(false);
-          setConnectedDevice(null);
-
-          // Attempt to reconnect
-          await reconnect();
-        }
-      );
       return true;
     } catch (error) {
       console.error("Reconnection failed:", error);

@@ -1,11 +1,11 @@
 export interface BleDevice {
   id: string;
   name: string;
-  geoData: GeoData[];
+  geoData: GeoData[] | null;
 }
 
 export interface GeoData {
-  ids: number[];
+  id: number | string;
   timestamp: Timestamp;
   latitude: number;
   longitude: number;

@@ -1,4 +1,4 @@
-import Realm from 'realm';
+import Realm from "realm";
 
 export class TimestampSchema extends Realm.Object<TimestampSchema> {
   hour!: number;
@@ -6,29 +6,29 @@ export class TimestampSchema extends Realm.Object<TimestampSchema> {
   second!: number;
 
   static schema: Realm.ObjectSchema = {
-    name: 'Timestamp',
+    name: "Timestamp",
     properties: {
-      hour: 'int',
-      minute: 'int',
-      second: 'int'
-    }
+      hour: "int",
+      minute: "int",
+      second: "int",
+    },
   };
 }
 
 export class GeoDataSchema extends Realm.Object<GeoDataSchema> {
-  ids!: number[];
+  id!: number | string;
   timestamp!: TimestampSchema;
   latitude!: number;
   longitude!: number;
 
   static schema: Realm.ObjectSchema = {
-    name: 'GeoData',
+    name: "GeoData",
     properties: {
-      ids: 'int[]',
-      timestamp: 'Timestamp',
-      latitude: 'double',
-      longitude: 'double'
-    }
+      ids: "int[]",
+      timestamp: "Timestamp",
+      latitude: "double",
+      longitude: "double",
+    },
   };
 }
 
@@ -38,12 +38,12 @@ export class BleDeviceSchema extends Realm.Object<BleDeviceSchema> {
   geoData!: GeoDataSchema[];
 
   static schema: Realm.ObjectSchema = {
-    name: 'BleDevice',
-    primaryKey: 'id',
+    name: "BleDevice",
+    primaryKey: "id",
     properties: {
-      id: 'string',
-      name: 'string',
-      geoData: 'GeoData[]'
-    }
+      id: "string",
+      name: "string",
+      geoData: "GeoData[]",
+    },
   };
 }

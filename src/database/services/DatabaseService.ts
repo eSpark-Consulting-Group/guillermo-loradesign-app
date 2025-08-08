@@ -1,5 +1,9 @@
 import Realm from "realm";
-import { BleDeviceSchema, GeoDataSchema, TimestampSchema } from "../models/schemas";
+import {
+  BleDeviceSchema,
+  GeoDataSchema,
+  TimestampSchema,
+} from "../models/schemas";
 import RealmMigrationService from "../migration/RealmMigrationService";
 import { BleDevice } from "@/src/types";
 
@@ -25,11 +29,14 @@ class DatabaseService {
   saveDevice(device: BleDevice): void {
     try {
       this.realm.write(() => {
-        let existingDevice = this.realm.objectForPrimaryKey<BleDeviceSchema>("BleDevice", device.id);
+        let existingDevice = this.realm.objectForPrimaryKey<BleDeviceSchema>(
+          "BleDevice",
+          device.id
+        );
 
         if (existingDevice) {
           existingDevice.name = device.name;
-          device.geoData.forEach((info) => {
+          device?.geoData!.forEach((info) => {
             let existingInfo = existingDevice.geoData.find(
               (d) =>
                 d.timestamp.hour === info.timestamp.hour &&
@@ -39,13 +46,15 @@ class DatabaseService {
                 d.longitude === info.longitude
             );
             if (!existingInfo) {
-              const newTimestamp = this.realm.create<InstanceType<typeof TimestampSchema>>("Timestamp", {
+              const newTimestamp = this.realm.create<
+                InstanceType<typeof TimestampSchema>
+              >("Timestamp", {
                 hour: info.timestamp.hour,
                 minute: info.timestamp.minute,
                 second: info.timestamp.second,
               });
               const newGeoData = this.realm.create<GeoDataSchema>("GeoData", {
-                ids: info.ids,
+                id: info.id,
                 timestamp: newTimestamp,
                 latitude: info.latitude,
                 longitude: info.longitude,
@@ -57,8 +66,8 @@ class DatabaseService {
           this.realm.create("BleDevice", {
             id: device.id,
             name: device.name,
-            geoData: device.geoData.map((info) => ({
-              ids: info.ids,
+            geoData: device?.geoData!.map((info) => ({
+              id: info.id,
               timestamp: info.timestamp,
               latitude: info.latitude,
               longitude: info.longitude,
@@ -78,7 +87,7 @@ class DatabaseService {
       id: device.id,
       name: device.name,
       geoData: device.geoData.map((info) => ({
-        ids: info.ids,
+        id: info.id,
         latitude: info.latitude,
         longitude: info.longitude,
         timestamp: info.timestamp,
