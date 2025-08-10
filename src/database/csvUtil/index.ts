@@ -1,10 +1,34 @@
 import { Platform, PermissionsAndroid, Share } from "react-native";
 import RNFS from "react-native-fs";
 import FileViewer from "react-native-file-viewer";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 import { GeoData, BleDevice } from "@/src/types";
 import { formatDate } from "@/src/utils/DateFormat";
 import { showToast } from "@/src/utils/showToast";
+
+const testCrash = (err: any) => {
+  const errorMessage = Array.isArray(err)
+    ? JSON.stringify(err)
+    : err instanceof Error
+    ? err.message
+    : typeof err === "string"
+    ? err
+    : JSON.stringify(err);
+  // Add context logs
+  crashlytics().log("CSV download issue");
+
+  // Set user attributes for better tracking
+  crashlytics().setUserId("test-user-01");
+  crashlytics().setAttribute("user", "client");
+  crashlytics().setAttribute("screen", "settings");
+  crashlytics().setAttribute("error", errorMessage);
+
+  // Record the error
+  crashlytics().recordError(new Error(errorMessage), "non-fatal");
+
+  console.log("Non-fatal error recorded!", errorMessage);
+};
 
 export const downloadDeviceInfoCSV = async (
   selectedDevice: BleDevice | null,
@@ -63,7 +87,12 @@ export const downloadDeviceInfoCSV = async (
         });
       } catch (error) {
         console.error("Error opening CSV file:", error);
-        showToast("Could not open the CSV file", "error");
+        showToast(
+          "Could not open the CSV file",
+          "error",
+          "Error Logged in Firebase (Developer will check)"
+        );
+        testCrash(error);
       }
     } else {
       await RNFS.writeFile(downloadPath, csvContent.trim(), "utf8");
@@ -81,5 +110,6 @@ export const downloadDeviceInfoCSV = async (
     }
   } catch (error) {
     console.error("Error saving CSV file:", error);
+    testCrash(error);
   }
 };
