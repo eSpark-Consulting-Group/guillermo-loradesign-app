@@ -269,4 +269,12 @@ export const settingsOptions = [
       console.log("Current Date For Map Display");
     },
   },
+  {
+    id: 4,
+    text: "Schedule Alerts",
+    icon: "calendar",
+    onPress: () => {
+      console.log("Current Date For Map Display");
+    },
+  },
 ];

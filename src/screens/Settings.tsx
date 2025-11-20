@@ -202,6 +202,8 @@ const Settings = () => {
                     ? handleDownload
                     : option.id === 3
                     ? handleDateRangeSelect
+                    : option.id === 4
+                    ? () => navigation.navigate("ScheduleSelection")
                     : () => {
                         if (!isOnline) {
                           console.log("reconnect logic");

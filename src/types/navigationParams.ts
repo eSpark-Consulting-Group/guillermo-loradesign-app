@@ -4,11 +4,12 @@ import { BleDevice, GeoData } from ".";
 export type RootStackParamList = {
   BaseStationSelection: undefined;
   BottomTabs: { device: BleDevice };
+  ScheduleSelection: undefined;
   // BottomTabs: { device?: Device; geoData?: GeoData };
 };
 
 export type BottomTabParamList = {
-  Map: { device?: BleDevice, redirectedFromTable: boolean };
+  Map: { device?: BleDevice; redirectedFromTable: boolean };
   Settings: { device?: BleDevice };
   Table: { device?: BleDevice };
 };

@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 
 import BaseStationSelection from "../screens/BaseStationSelection";
+import ScheduleSelection from "../screens/ScheduleSelection";
 import MapView from "../screens/MapView";
 import Settings from "../screens/Settings";
 import TableDetails from "../screens/TableDetails";
@@ -71,6 +72,7 @@ const BottomTabs = ({
 const RootStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ScheduleSelection" component={ScheduleSelection} />
       <Stack.Screen
         name="BaseStationSelection"
         component={BaseStationSelection}
