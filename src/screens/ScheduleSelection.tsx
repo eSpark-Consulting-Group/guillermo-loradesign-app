@@ -10,6 +10,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/navigationParams";
 import { useTheme } from "react-native-paper";
 import { getDateRangeObjects } from "../utils/DateFormat";
+import Dropdown, { DropdownItem } from "../components/DropdownMenu";
 
 type ScheduleScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -21,6 +22,14 @@ const ScheduleSelection = () => {
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [selected, setSelected] = useState<DropdownItem | null>(null);
+
+  const timeSlots: DropdownItem[] = [
+    { label: "6:00-8:00", value: "A" },
+    { label: "7:00-9:00", value: "B" },
+    { label: "8:00-10:00", value: "C" },
+    { label: "16:00-18:00", value: "D" },
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -46,7 +55,35 @@ const ScheduleSelection = () => {
           }
         }}
       />
-
+      <View style={{ flex: 1, borderTopWidth: 1 }}>
+        <View style={{ flexDirection: "row", paddingVertical: 10 }}>
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <MyText type="defaultSemiBold">Dates Selected</MyText>
+          </View>
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <MyText type="defaultSemiBold">2-Hour Time Window</MyText>
+          </View>
+        </View>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.goBack()}
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <MyText>Add Date</MyText>
+          </TouchableOpacity>
+          <Dropdown
+            data={timeSlots}
+            placeholder="Select a slot"
+            value={selected}
+            onSelect={(item) => setSelected(item)}
+          />
+        </View>
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           activeOpacity={0.8}
