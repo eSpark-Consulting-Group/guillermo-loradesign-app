@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "201167550163",
+    "project_id": "asdasf-20c63",
+    "storage_bucket": "asdasf-20c63.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201167550163:android:b9b206c00d480408c7c626",
+        "android_client_info": {
+          "package_name": "com.anonymous.guillermoloradesignapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSBSEO-ZSUZp6p_wuE5L6XmG78lweZI6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

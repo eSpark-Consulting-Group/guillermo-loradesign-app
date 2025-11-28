@@ -9,7 +9,9 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "clean": "cd android && ./gradlew clean"
+    "clean": "cd android && ./gradlew clean",
+    "build:debug": "cd android && ./gradlew clean && ./gradlew assembleDebug",
+    "build:apk": "cd android && ./gradlew clean && ./gradlew assembleRelease"
   },
   "jest": {
     "preset": "jest-expo"
@@ -17,6 +19,8 @@
   "dependencies": {
     "@expo/vector-icons": "~14.0.4",
     "@react-native-community/datetimepicker": "8.2.0",
+    "@react-native-firebase/app": "^23.0.0",
+    "@react-native-firebase/crashlytics": "^23.0.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.2",

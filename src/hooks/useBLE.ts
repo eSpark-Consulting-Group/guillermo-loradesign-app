@@ -200,6 +200,7 @@ export const useBLE = () => {
         },
         latitude: buffer.readDoubleLE(0x10),
         longitude: buffer.readDoubleLE(0x18),
+        altitude: buffer.readDoubleLE(0x26),
       };
     } catch (error) {
       console.error("Error parsing geolocation data:", error);
