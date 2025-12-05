@@ -14,12 +14,12 @@ export const downloadDeviceInfoCSV = async (
 
   const csvHeaders = [
     "Device ID",
-    "GNSS Location (Latitude/Longitude)",
+    "GNSS Location (Latitude/Longitude/Altitude)",
     "Date",
   ];
   const csvRows = geoData.map((row) => [
     selectedDevice.id.trim(),
-    `${row.latitude}/${row.longitude}`,
+    `${row.latitude}/${row.longitude}/${row.altitude}`,
     formatDate(row.timestamp).trim(),
   ]);
 

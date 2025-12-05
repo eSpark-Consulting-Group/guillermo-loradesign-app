@@ -6,21 +6,23 @@ import {
   TouchableOpacity,
   UIManager,
   Platform,
+  Modal,
 } from "react-native";
-import { MyText } from "../components/MyText";
 import { Feather, AntDesign } from "@expo/vector-icons";
-import { primaryColor } from "../constants/Colors";
-import { settingsOptions } from "../constants";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import { downloadDeviceInfoCSV } from "../database/csvUtil";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { BleDevice, GeoData } from "../types";
 import { FlatList, Pressable } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { useSelector } from "react-redux";
+
+import { MyText } from "../components/MyText";
+import { primaryColor } from "../constants/Colors";
+import { settingsOptions } from "../constants";
+import { RootState } from "../store";
+import { downloadDeviceInfoCSV } from "../database/csvUtil";
+import { BleDevice, GeoData } from "../types";
 import {
   BottomTabParamList,
   RootStackParamList,
@@ -30,6 +32,7 @@ import { formatDate } from "../utils/DateFormat";
 import { useBLE } from "../hooks/useBLE";
 import DatabaseService from "../database/services/DatabaseService";
 import OverlayLoader from "../components/OverlayLoader";
+import ScheduleSelection from "./ScheduleSelection";
 
 // Enable smooth Layout Animation for Android
 if (
@@ -55,6 +58,7 @@ const Settings = () => {
   const [datePickerStep, setDatePickerStep] = useState(0);
   const { reconnect, connectionStatus } = useBLE();
   const [isOnline, setIsOnline] = useState<boolean | null>(null);
+  const [visible, setVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchConnectionStatus = async () => {
@@ -180,7 +184,7 @@ const Settings = () => {
           onPress={() => selectedDevice && handlePress(selectedDevice, item)}
         >
           <MyText style={styles.deviceTitle}>
-            {`${item.latitude}, ${item.longitude}`}
+            {`${item.latitude}, ${item.longitude}, ${item.altitude}`}
           </MyText>
         </Pressable>
       </View>
@@ -190,6 +194,14 @@ const Settings = () => {
   return (
     <SafeAreaView style={styles.container}>
       <OverlayLoader isShow={isDownloading} />
+      <Modal
+        visible={visible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setVisible(false)}
+      >
+        <ScheduleSelection onClose={() => setVisible(false)} />
+      </Modal>
       <View style={styles.mainContainer}>
         <View style={styles.optionsSection}>
           {settingsOptions.map((option) => (
@@ -203,7 +215,7 @@ const Settings = () => {
                     : option.id === 3
                     ? handleDateRangeSelect
                     : option.id === 4
-                    ? () => navigation.navigate("ScheduleSelection")
+                    ? () => setVisible(true)
                     : () => {
                         if (!isOnline) {
                           console.log("reconnect logic");
@@ -315,7 +327,7 @@ const Settings = () => {
                 Date
               </MyText>
               <MyText style={[styles.headerText, { width: "60%" }]}>
-                GNSS Location (Latitude, Longitude)
+                GNSS Location (Latitude, Longitude, Altitude)
               </MyText>
             </View>
 

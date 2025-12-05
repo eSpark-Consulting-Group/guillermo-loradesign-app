@@ -6,10 +6,11 @@ import { GeoData, BleDevice } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import DatabaseService from "../database/services/DatabaseService";
 import { RootState } from "../store";
-import { selectDevice } from "../features/device/deviceSlice";
+import { selectDevice, selectBleDevice } from "../features/device/deviceSlice";
 
 const UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
 const TX_CHARACTERISTIC_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E";
+const RX_CHARACTERISTIC_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E";
 
 export const useBLE = () => {
   const bleManager = useRef(new BleManager()).current;
@@ -23,6 +24,9 @@ export const useBLE = () => {
   const dispatch = useDispatch();
   const selectedDevice = useSelector(
     (state: RootState) => state.device.selectedDevice
+  );
+  const selectedBleDevice = useSelector(
+    (state: RootState) => state.device.selectedBleDevice
   );
   const reconnectingRef = useRef(false);
 
@@ -174,12 +178,86 @@ export const useBLE = () => {
     }
   };
 
+  const writeCharacteristics = async (device: Device) => {
+    try {
+      console.log("writing data to", selectedBleDevice);
+      console.log("with UART_SERVICE_UUID", UART_SERVICE_UUID);
+      console.log("with RX_CHARACTERISTIC_UUID", RX_CHARACTERISTIC_UUID);
+
+      const arr = [
+        12,
+        1,
+        "A",
+        12,
+        2,
+        "A",
+        12,
+        3,
+        "A",
+        12,
+        4,
+        "A",
+        12,
+        5,
+        "A",
+        12,
+        6,
+        "A",
+        12,
+        7,
+        "A",
+        12,
+        8,
+        "A",
+        12,
+        9,
+        "A",
+        12,
+        10,
+        "A",
+        12,
+        11,
+        "A",
+        12,
+        12,
+        "A",
+        12,
+        13,
+        "A",
+        12,
+        14,
+        "A",
+        12,
+        15,
+        "A",
+      ];
+
+      const bytes = arr.map((v) =>
+        typeof v === "string" ? v.charCodeAt(0) : v
+      );
+
+      const buffer = Uint8Array.from(bytes);
+      console.log("bytes to buffer:", buffer);
+      const base64 = Buffer.from(buffer).toString("base64");
+      console.log("Base64 to write:", base64);
+      const writeChars =
+        await selectedBleDevice?.writeCharacteristicWithoutResponseForService(
+          UART_SERVICE_UUID,
+          RX_CHARACTERISTIC_UUID,
+          base64
+        );
+      console.log("Write successful:", writeChars);
+    } catch (error) {
+      console.error("Write error:", error);
+    }
+  };
+
   //parses raw binary data
   const parseGeolocationData = (base64Data: string): GeoData | null => {
     try {
       const buffer = Buffer.from(base64Data, "base64");
-      console.log("Base64 Data:", buffer);
-      console.log("buffer Data:", buffer.readUIntLE(0x00, 1).toString(16));
+      console.log("Base64 Data:", base64Data);
+      console.log("buffer Data:", buffer);
 
       //   console.log("Decoded Buffer Length:", buffer.length);
       //   console.log("Decoded Buffer:", buffer.toString("hex"));
@@ -198,8 +276,9 @@ export const useBLE = () => {
           minute: buffer.readUInt8(0x0d),
           second: buffer.readUInt8(0x0e),
         },
-        latitude: buffer.readDoubleLE(0x10),
-        longitude: buffer.readDoubleLE(0x18),
+        latitude: buffer.readDoubleLE(0x0f),
+        longitude: buffer.readDoubleLE(0x17),
+        altitude: buffer.readDoubleLE(0x1f),
       };
     } catch (error) {
       console.error("Error parsing geolocation data:", error);
@@ -264,7 +343,10 @@ export const useBLE = () => {
       }
 
       const mtu = await device.requestMTU(64);
+
       const discovered = await device.discoverAllServicesAndCharacteristics();
+      console.log("discovered kia hai", discovered);
+      dispatch(selectBleDevice(discovered));
       setConnectedDevice(discovered);
       setIsConnected(true);
       setDeviceDisconnected(false);
@@ -293,5 +375,6 @@ export const useBLE = () => {
     disconnect,
     connectionStatus,
     reconnect,
+    writeCharacteristics,
   };
 };

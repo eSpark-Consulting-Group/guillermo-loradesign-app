@@ -9,6 +9,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export interface DropdownItem {
   label: string;
@@ -57,11 +58,11 @@ const Dropdown: React.FC<DropdownProps> = ({
         style={[styles.dropdown, dropdownStyle]}
         onPress={() => setVisible(true)}
       >
+        {!selected ? <Ionicons name="add-circle-outline" size={24} /> : null}
         <Text
           style={[
             styles.dropdownText,
             textStyle,
-            !selected && styles.placeholder,
             !selected && placeholderStyle,
           ]}
         >
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    gap: 5,
   },
   dropdownText: {
     fontSize: 16,

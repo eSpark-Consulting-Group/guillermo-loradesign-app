@@ -72,7 +72,6 @@ const BottomTabs = ({
 const RootStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="ScheduleSelection" component={ScheduleSelection} />
       <Stack.Screen
         name="BaseStationSelection"
         component={BaseStationSelection}

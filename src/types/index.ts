@@ -9,6 +9,7 @@ export interface GeoData {
   timestamp: Timestamp;
   latitude: number;
   longitude: number;
+  altitude: number;
 }
 
 export interface Timestamp {

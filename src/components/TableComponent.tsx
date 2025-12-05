@@ -44,7 +44,7 @@ const TableComponent = ({ data }: TableComponentProps) => {
         <MyText style={[styles.headerText, { width: "20%" }]}>Device ID</MyText>
         <MyText style={[styles.headerText, { width: "20%" }]}>Date</MyText>
         <MyText style={[styles.headerText, { width: "60%" }]}>
-          GNSS Location (Latitude,Longitude)
+          GNSS Location (Latitude,Longitude, Altitude)
         </MyText>
       </View>
 
@@ -72,7 +72,7 @@ const TableComponent = ({ data }: TableComponentProps) => {
                 onPress={() => handlePress(item)}
               >
                 <MyText style={styles.deviceTitle}>
-                  {`${item.latitude}, ${item.longitude}`}
+                  {`${item.latitude}, ${item.longitude}, ${item.altitude}`}
                 </MyText>
               </Pressable>
             </View>

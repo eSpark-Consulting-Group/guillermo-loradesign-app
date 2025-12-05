@@ -35,6 +35,7 @@ const BottomSheetComponent = ({
             <Text style={styles.itemText}>Device Id: {geoData.id}</Text>
             <Text style={styles.itemText}>Latitude: {geoData.latitude}</Text>
             <Text style={styles.itemText}>Longitude: {geoData.longitude}</Text>
+            <Text style={styles.itemText}>Altitude: {geoData.altitude}</Text>
             <Text style={styles.itemText}>
               Timestamp: {formatDate(geoData.timestamp)}
             </Text>
