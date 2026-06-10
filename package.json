@@ -53,7 +53,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "react-redux": "^9.2.0",
-    "realm": "^12.14.1"
+    "realm": "^20.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
