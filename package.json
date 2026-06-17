@@ -31,7 +31,7 @@
     "expo-linking": "~7.0.5",
     "expo-router": "4.0.19",
     "expo-splash-screen": "~0.29.22",
-    "expo-status-bar": "~2.0.1",
+    "expo-status-bar": "~56.0.4",
     "expo-symbols": "~56.0.6",
     "expo-system-ui": "~56.0.5",
     "expo-web-browser": "~14.0.2",
