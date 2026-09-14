@@ -33,7 +33,7 @@
     "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~56.0.4",
     "expo-symbols": "~56.0.6",
-    "expo-system-ui": "~56.0.5",
+    "expo-system-ui": "~57.0.4",
     "expo-web-browser": "~14.0.2",
     "guillermo-loradesign-app": "file:",
     "react": "18.3.1",
